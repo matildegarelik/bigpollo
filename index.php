@@ -27,7 +27,7 @@ if ($_SESSION['usuario'] != '') { ?>
   </head>
 
   <body class="skin-default fixed-layout">
-    <?php if ($_GET['msg'] == 'error') {
+    <?php if (isset($_GET['msg']) && $_GET['msg'] == 'error') {
       echo '<script>alert("Datos Incorrectos")</script>';
     } ?>
 
@@ -43,7 +43,7 @@ if ($_SESSION['usuario'] != '') { ?>
 
       <div class="page-wrapper" style="min-height: 879px;">
         <?php
-        if (!$_GET['pagina']) {
+        if (!isset($_GET['pagina']) || !$_GET['pagina']) {
           if ($_SESSION['tipo'] == 'Despacho') {
             include 'paginas/estadocamion.php';
           } else {

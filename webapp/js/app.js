@@ -110,11 +110,11 @@ var App = {
 			},
 			navigation: function() {
 						$(".nav .mask").on("touchstart click", function(e) {
-									e.preventDefault(), $(this).parent().toggleClass("active")
+						//e.preventDefault(), $(this).parent().toggleClass("active")
 						})
 			},
 			hyperlinks: function() {
-						$(".nav .nav-item").on("click", function(e) {
+						$(".nav-item.hyp").on("click", function(e) {
 									e.preventDefault();
 									var t = $(this).attr("href").replace("#", "");
 									$(".html").removeClass("visible"),

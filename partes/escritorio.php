@@ -3,7 +3,7 @@ $estemes = date('Y-m');
 $clientes_nuevos = $link->query("SELECT * FROM `clientes` WHERE `estado_clientes` LIKE '1' AND `cuando_clientes` LIKE '$estemes%' ");
 $cuento_nuevos = mysqli_num_rows($clientes_nuevos);
 
-if ($_GET['e'] == 'ceok') {
+if (isset($_GET['e']) && $_GET['e'] == 'ceok') {
     echo '<div class="callout callout-success">
     <h4>Correcto!</h4>
 
@@ -11,21 +11,21 @@ if ($_GET['e'] == 'ceok') {
   </div>';
 }
 
-if ($_GET['e'] == 'csok') {
+if (isset($_GET['e']) && $_GET['e'] == 'csok') {
     echo '
   <div class="callout callout-success">
     <h4>Correcto!</h4>
     <p>La salida de Caja fue realizada correctamente.</p>
   </div>';
 }
-if ($_GET['e'] == 'ccdok') {
+if (isset($_GET['e']) && $_GET['e'] == 'ccdok') {
     echo '
     <div class="callout callout-success">
       <h4>Correcto!</h4>
       <p>La Caja Diaria se cerró correctamente.</p>
     </div>';
 }
-if ($_GET['e'] == 'crcok') {
+if (isset($_GET['e']) && $_GET['e'] == 'crcok') {
     echo '
       <div class="callout callout-success">
         <h4>Correcto!</h4>

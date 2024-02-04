@@ -39,13 +39,13 @@
             <div class="col-md-4 m-b-20">
               <select name="tipodni" id="tipodni" class="form-control tipodni" required="">
                 <option value="" disabled selected>Seleccione Tipo documento</option>
-                <option value="DNI" <?php if ($row['tipodni_clientes'] == 'DNI') {
+                <option value="DNI" <?php if (isset($row['tipodni_clientes']) && $row['tipodni_clientes'] == 'DNI') {
                                       echo ' selected';
                                     } ?>>DNI</option>
-                <option value="CUIT" <?php if ($row['tipodni_clientes'] == 'CUIT') {
+                <option value="CUIT" <?php if (isset($row['tipodni_clientes']) && $row['tipodni_clientes'] == 'CUIT') {
                                         echo ' selected';
                                       } ?>>CUIT</option>
-                <option value="CUIL" <?php if ($row['tipodni_clientes'] == 'CUIL') {
+                <option value="CUIL" <?php if (isset($row['tipodni_clientes']) && $row['tipodni_clientes'] == 'CUIL') {
                                         echo ' selected';
                                       } ?>>CUIL</option>
               </select>
@@ -126,7 +126,7 @@
               <h3>Datos Adicinales</h3>
               <div class="row">
 
-                <div class="col-md-3 m-b-20">
+                <!--<div class="col-md-3 m-b-20">
                   <label class="radio-inline m-r-20">
                     <input style="margin-left:0px;" class="sexoh" type="radio" value="H" name="sexo" required="">&nbsp; Hombre
                   </label>
@@ -145,7 +145,7 @@
                     <option value="Divorciado/a">Divorciado/a</option>
                     <option value="Viudo/a">Viudo/a</option>
                   </select>
-                </div>
+                </div>-->
                 <div class="col-md-3 m-b-20">
                   <label for="cumple">Fecha de Cumpleaños</label>
                   <input type="date" placeholder="Cumpleaños" class="form-control cumple" id="cumple" name="cumple" required="">
@@ -167,7 +167,7 @@
               <div class="row">
                 <div class="col-md-6 m-b-20">
                   <label for="financia">Habilitado Financiacion</label>
-                  <select class="form-control ecivil" id="financia" name="financia">
+                  <select class="form-control financia" id="financia" name="financia">
                     <option value="" disabled="" selected="">Seleccione</option>
                     <option value="1">SI</option>
                     <option value="0">NO</option>
@@ -175,7 +175,7 @@
                 </div>
                 <div class="col-md-6 m-b-20">
                   <label for="ecivil">Tope de Financiacion</label>
-                  <input type="number" step="any" placeholder="Indique el limite" class="form-control" id="limitefinancia" name="limitefinancia" required="">
+                  <input type="number" step="any" placeholder="Indique el limite" class="form-control limite" id="limitefinancia" name="limitefinancia" required="">
                 </div>
               </div>
               <div class="form-group">
