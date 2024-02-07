@@ -21,7 +21,7 @@ if ($_SESSION['usuario'] != '') {
 
 
   //echo 'afuera';
-  if ($_POST['accion'] == 'up_notas') {
+  if (isset($_POST['accion']) && $_POST['accion'] == 'up_notas') {
     $id = $_POST['id'];
     $notas = $_POST['notas'];
 
@@ -30,7 +30,7 @@ if ($_SESSION['usuario'] != '') {
     header('Location: ../index.php?pagina=clientes_view&id=' . $id);
   }
 
-  if ($_POST['accion'] == 'add_cate') {
+  if (isset($_POST['accion']) && $_POST['accion'] == 'add_cate') {
     $nombre = $_POST['nombre'];
     $color = $_POST['color'];
     $iconito = $_POST['iconito'];
@@ -45,7 +45,7 @@ if ($_SESSION['usuario'] != '') {
     }
   }
 
-  if ($_POST['accion'] == 'edit_cate') {
+  if (isset($_POST['accion']) && $_POST['accion'] == 'edit_cate') {
     $id = $_POST['id'];
     $nombre = $_POST['nombre'];
     $color = $_POST['color'];
@@ -61,7 +61,7 @@ if ($_SESSION['usuario'] != '') {
     }
   }
 
-  if ($_GET['accion'] == 'delcat') {
+  if (isset($_GET['accion']) && $_GET['accion'] == 'delcat') {
     $id = $_GET['id'];
     $update = $link->query("UPDATE categorias set estado_categoria='0' WHERE id_categoria='$id'");
     if ($update) {
@@ -71,7 +71,7 @@ if ($_SESSION['usuario'] != '') {
     }
   }
 
-  if ($_GET['accion'] == 'delrub') {
+  if (isset($_GET['accion']) && $_GET['accion'] == 'delrub') {
     $id = $_GET['id'];
     $update = $link->query("UPDATE rubros set estado_rubros='0' WHERE id_rubros='$id'");
     if ($update) {
@@ -81,18 +81,13 @@ if ($_SESSION['usuario'] != '') {
     }
   }
 
-  if ($_POST['accion'] == 'add_clientes') {
+  if (isset($_POST['accion']) && $_POST['accion'] == 'add_clientes') {
     $apellido = $_POST['apellido'];
     $nombre = $_POST['nombre'];
     $tipodni = $_POST['tipodni'];
     $dni = $_POST['cuit'];
-    $sexoh = $_POST['sexoh'];
-    $sexom = $_POST['sexom'];
-    $ecivil = $_POST['ecivil'];
     $cumple = $_POST['cumple'];
-    if ($cumple == '') {
-      $cumple = '0000-00-00';
-    }
+    if($cumple==''){$cumple='0000-00-00';}
     $email = $_POST['email'];
     $email2 = $_POST['email2'];
     $telfijo = $_POST['telfijo_com'];
@@ -100,112 +95,92 @@ if ($_SESSION['usuario'] != '') {
     $provincia = $_POST['provincia'];
     $ciudad = $_POST['ciudad'];
     $notas = $_POST['notas'];
-    //  $direccion = $_POST['direccion'];
-    //  $numero = $_POST['numero'];
-    //  $piso = $_POST['piso'];
-    //  $depto = $_POST['depto'];
-    $razon = addslashes(htmlentities($_POST['razon']));
-    $cuitcuil = $_POST['cuit'];
-    $condicioniva = $_POST['condicioniva'];
+  //  $direccion = $_POST['direccion'];
+  //  $numero = $_POST['numero'];
+  //  $piso = $_POST['piso'];
+  //  $depto = $_POST['depto'];
+    $razon =addslashes(htmlentities($_POST['razon']));
+    $cuitcuil=$_POST['cuit'];
+    $condicioniva=$_POST['condicioniva'];
     $rubro = $_POST['rubro'];
-    //  $telfijo_com = $_POST['telfijo_com'];
-    //  $celular_com = $_POST['celular_com'];
+  //  $telfijo_com = $_POST['telfijo_com'];
+  //  $celular_com = $_POST['celular_com'];
     $direccion_com = $_POST['direccion_com'];
     $numero_com = $_POST['numero_com'];
     $piso_com = $_POST['piso_com'];
     $depto_com = $_POST['depto_com'];
     $upload = $_POST['upload'];
-    $asignado = $_POST['asignado'];
-    if ($asignado == '') {
-      $asignado = '0';
-    }
+    $asignado= $_POST['asignado'];
+    if($asignado==''){$asignado='0';}
     $financia = $_POST['financia'];
-    if ($financia == '' || $financia == 'null') {
-      $financia = '0';
-    }
-    $limite = $_POST['limite'];
+    if($financia=='' || $financia=='null'){$financia='0';}
+    $limite= $_POST['limite'];
 
 
     // inicio geoencode
     $consulto_datos = $link->query("SELECT * from ciudad INNER JOIN provincia on provincia.id_provincia = ciudad.provincia_id where ciudad.id_ciudad ='$ciudad'");
-    $row = mysqli_fetch_array($consulto_datos);
-    $direccion_geo = $direccion_com . ' ' . $numero_com . ',' . $row['ciudad_nombre'] . ',' . $row['provincia_nombre'] . ',Argentina';
-    $direccion_geo = str_replace(' ', '+', $direccion_geo);
-    $url = "https://maps.googleapis.com/maps/api/geocode/json?key=" . $api_key . "&sensor=false&address=";
-    $call = $url . urlencode($direccion_geo);
-    $response = json_decode(file_get_contents($call), true);
-    $latitud_com = $response['results'][0]['geometry']['location']['lat'];
-    $longitud_com = $response['results'][0]['geometry']['location']['lng'];
-    $latitud = '';
-    $longitud = '';
+    $row= mysqli_fetch_array($consulto_datos);
+    $direccion_geo= $direccion_com.' '.$numero_com.','.$row['ciudad_nombre'].','.$row['provincia_nombre'].',Argentina';
+    $direccion_geo= str_replace(' ','+',$direccion_geo);
+      $url = "https://maps.googleapis.com/maps/api/geocode/json?key=".$api_key."&sensor=false&address=";
+      $call = $url.urlencode($direccion_geo);
+      $response = json_decode(file_get_contents($call), true);
+      $latitud_com = $response['results'][0]['geometry']['location']['lat'];
+      $longitud_com = $response['results'][0]['geometry']['location']['lng'];
+      $latitud='';
+      $longitud='';
 
-    if ($latitud != '' || $latitud != '0') {
-      $latitud = str_replace(",", '.', $latitud);
-      $longitud = str_replace(",", '.', $longitud);
-    }
-    if ($latitud_com != '' || $latitud_com != '0') {
-      $latitud_com = str_replace(",", '.', $latitud_com);
-      $longitud_com = str_replace(",", '.', $longitud_com);
-    }
+    if ($latitud != '' || $latitud != '0' ){$latitud = str_replace(",", '.', $latitud);  $longitud=str_replace(",", '.', $longitud);}
+    if ($latitud_com != '' || $latitud_com != '0' ){$latitud_com = str_replace(",", '.', $latitud_com);  $longitud_com=str_replace(",", '.', $longitud_com);}
 
-    if ($latitud_com == '') {
-      $latitud_com = '0';
-    }
-    if ($longitud_com == '') {
-      $longitud_com = '0';
-    }
-    if ($latitud == '') {
-      $latitud = '0';
-    }
-    if ($longitud == '') {
-      $longitud = '0';
-    }
+    if($latitud_com==''){$latitud_com='0';}
+    if($longitud_com==''){$longitud_com='0';}
+    if($latitud==''){$latitud='0';}
+    if($longitud==''){$longitud='0';}
 
     // fin geoencode
-    $inserto_cliente = "INSERT INTO clientes SET
-          razon_com_clientes='$razon',
-          tipodni_clientes='$tipodni',
-          dni_clientes='$dni',
-          condicioniva_com_clientes='$condicioniva',
-          rubro_com_clientes='$rubro',
-          celular_clientes='$celular',
-          telefono_clientes='$telfijo',
-          email_clientes='$email',
-          provincia_clientes='$provincia',
-          ciudad_clientes='$ciudad',
-          direccion_clientes='$direccion_com',
-          dirnum_clientes='$numero_com',
-          lat_clientes='$latitud_com',
-          lng_clientes='$longitud_com',
-          piso_clientes='$piso_com',
-          depto_clientes='$depto_com',
-          notas_clientes='$notas',
-          sexo_clientes='$sexo',
-          estadocivil_clientes='$ecivil',
-          fechacumple_clientes='$cumple',
-          asignado_clientes='$asignado',
-          financiacion_com_clientes='$financia',
-          topefinancia_com_clientes='$limite',
-          cp_cliente='0',
-          foto_clientes='$upload',
-          estado_clientes='1',
-          quien_clientes='$quien',
-          cuando_clientes='$cuando' ";
+    $inserto_cliente ="INSERT INTO clientes SET
+    razon_com_clientes='$razon',
+    tipodni_clientes='$tipodni',
+    dni_clientes='$dni',
+    condicioniva_com_clientes='$condicioniva',
+    rubro_com_clientes='$rubro',
+    celular_clientes='$celular',
+    telefono_clientes='$telfijo',
+    email_clientes='$email',
+    provincia_clientes='$provincia',
+    ciudad_clientes='$ciudad',
+    direccion_clientes='$direccion_com',
+    dirnum_clientes='$numero_com',
+    lat_clientes='$latitud_com',
+    lng_clientes='$longitud_com',
+    piso_clientes='$piso_com',
+    depto_clientes='$depto_com',
+    notas_clientes='$notas',
+    fechacumple_clientes='$cumple',
+    asignado_clientes='$asignado',
+    financiacion_com_clientes='$financia',
+    topefinancia_com_clientes='$limite',
+    cp_cliente='0',
+    foto_clientes='$upload',
+    estado_clientes='1',
+    quien_clientes='$quien',
+    cuando_clientes='$cuando' ";
     $inserta = $link->query($inserto_cliente);
     $id_clie_ulti = mysqli_insert_id($link);
+  //  $inserta = $link->query("insert INTO clientes_comercios set situacion_comclientes='activo', cliente_comclientes='$id_clie_ulti', estado_comclientes='1',	quien_comclientes='$quien',	cuando_comclientes='$cuando'");
 
-    if ($inserta) {
-      echo $id_clie_ulti . '@' . $razon . '@' . $provincia . '@' . $ciudad . '@' . $direccion_com . '@' . $numero_com;
-    } else {
-      $accion = "Error al Insertar cliente  (" . $inserto_cliente . ")";
-      echo 'FALSE';
-    }
+    if($inserta){echo $id_clie_ulti.'@'.$razon.'@'.$provincia.'@'.$ciudad.'@'.$direccion_com.'@'.$numero_com;}
+     else {
+     $accion= "Error al Insertar cliente  (".$inserto_cliente.")";  
+     echo 'FALSE';
+     }
   }
 
 
   //--------------------------------------//
 
-  if ($_POST['accion'] == 'add_comercio') {
+  if (isset($_POST['accion']) && $_POST['accion'] == 'add_comercio') {
 
     $cliente = $_POST['cliente'];
     $razon = addslashes(htmlentities($_POST['razon']));
@@ -257,7 +232,7 @@ if ($_SESSION['usuario'] != '') {
     }
   }
 
-  if ($_POST['accion'] == 'add_pedido') {
+  if (isset($_POST['accion']) && $_POST['accion'] == 'add_pedido') {
     $monto = $_POST['monto'];
     $detalle = $_POST['detalle'];
     $comercio = $_POST['comercio'];
@@ -274,7 +249,7 @@ if ($_SESSION['usuario'] != '') {
   }
 
 
-  if ($_POST['accion'] == 'add_pago') {
+  if (isset($_POST['accion']) && $_POST['accion'] == 'add_pago') {
     $monto = $_POST['monto_pago'];
     $detalle = $_POST['detalle_pago'];
     $comercio = $_POST['comercio_pago'];
@@ -290,7 +265,7 @@ if ($_SESSION['usuario'] != '') {
     }
   }
 
-  if ($_POST['accion'] == 'edit_transaccion') {
+  if (isset($_POST['accion']) && $_POST['accion'] == 'edit_transaccion') {
     $id = $_POST['id_trans'];
     $monto = $_POST['monto_trans'];
     $tipo = $_POST['tipo_trans'];
@@ -311,19 +286,13 @@ if ($_SESSION['usuario'] != '') {
     }
   }
 
-  if ($_POST['accion'] == 'editar_clientes') {
+  if (isset($_POST['accion']) && $_POST['accion'] == 'editar_clientes') {
     //echo 'entro';
     $id = $_POST['id'];
     $apellido = $_POST['apellido'];
     $nombre = $_POST['nombre'];
     $tipodni = $_POST['tipodni'];
     $dni = $_POST['dni'];
-    $sexo = $_POST['sexo'];
-    if ($sexo == '' || $sexo == 'undefined') {
-      $sexo = 'H';
-    }
-
-    $ecivil = $_POST['ecivil'];
     $cumple = $_POST['cumple'];
     if ($cumple == '') {
       $cumple = '0000-00-00';
@@ -377,7 +346,7 @@ if ($_SESSION['usuario'] != '') {
     }
     // fin geoencode
     $sql_update_client = "UPDATE clientes SET tipodni_clientes='$tipodni',	dni_clientes='$dni',	fechacumple_clientes='$cumple',	email_clientes='$email',	celular_clientes='$celular',	telefono_clientes='$telfijo',	provincia_clientes='$provincia',	ciudad_clientes='$ciudad',	direccion_clientes='$direccion_com',	dirnum_clientes='$numero_com',
-          piso_clientes='$piso_com', depto_clientes='$depto_com',	estadocivil_clientes='$ecivil',	foto_clientes='$upload',	sexo_clientes='$sexo',	notas_clientes='$notas',	estado_clientes='1',	lat_clientes='$latitud',	lng_clientes='$longitud',	 razon_com_clientes='$razon', cuitcuil_com_clientes='$cuitcuil', condicioniva_com_clientes='$condicioniva', rubro_com_clientes='$rubro', direccion_com_clientes='$direccion_com',
+          piso_clientes='$piso_com', depto_clientes='$depto_com',	foto_clientes='$upload',	notas_clientes='$notas',	estado_clientes='1',	lat_clientes='$latitud',	lng_clientes='$longitud',	 razon_com_clientes='$razon', cuitcuil_com_clientes='$cuitcuil', condicioniva_com_clientes='$condicioniva', rubro_com_clientes='$rubro', direccion_com_clientes='$direccion_com',
            quien_clientes='$quien',	cuando_clientes='$cuando', asignado_clientes='$asignado', financiacion_com_clientes='$financia', topefinancia_com_clientes='$limite'  where id_clientes = '$id' ";
 
     $inserta = $link->query($sql_update_client);
@@ -393,7 +362,7 @@ if ($_SESSION['usuario'] != '') {
     // echo $sql_update_client;
   }
 
-  if ($_POST['accion'] == 'edita_comercio') {
+  if (isset($_POST['accion']) && $_POST['accion'] == 'edita_comercio') {
     $comercio = $_POST['id'];
     $cliente = $_POST['cliente'];
     $razon = addslashes(htmlentities($_POST['razon']));
@@ -458,7 +427,7 @@ if ($_SESSION['usuario'] != '') {
     }
   }
 
-  if ($_POST['accion'] == 'elimina_clientes') {
+  if (isset($_POST['accion']) && $_POST['accion'] == 'elimina_clientes') {
     $id = $_POST['id'];
 
     $update2 = $link->query("UPDATE clientes SET estado_clientes='0' where id_clientes ='$id' ");
@@ -469,7 +438,18 @@ if ($_SESSION['usuario'] != '') {
     }
   }
 
-  if ($_POST['accion'] == 'elimina_carga') {
+  if (isset($_POST['accion']) && $_POST['accion'] == 'elimina_proveedor') {
+    $id = $_POST['id'];
+
+    $update2 = $link->query("UPDATE proveedores SET estado_proveedor='0' where id_proveedor ='$id' ");
+    if ($update2) {
+      echo 'TRUE';
+    } else {
+      echo 'FALSE';
+    }
+  }
+
+  if (isset($_POST['accion']) && $_POST['accion'] == 'elimina_carga') {
     $id = $_POST['id'];
     $update = $link->query("UPDATE stock_depositos SET estado_stockd='0' where `estado_stockd` = 1 AND `idcarga_stockd` ='$id' ");
     if ($update > 0) {
@@ -480,7 +460,7 @@ if ($_SESSION['usuario'] != '') {
     }
   }
 
-  if ($_POST['accion'] == 'elimina_transaccion') {
+  if (isset($_POST['accion']) && $_POST['accion'] == 'elimina_transaccion') {
     $id = $_POST['id'];
     $update1 = $link->query("UPDATE transaccion SET estado='0', quien='$quien' where id ='$id' ");
 
@@ -494,7 +474,7 @@ if ($_SESSION['usuario'] != '') {
   // ------------------------------Proveedores ------------------------------//
 
   //************ Proceso Edita Proveedor **************//
-  if ($_POST['accion'] == 'editar_proveedor') {
+  if (isset($_POST['accion']) && $_POST['accion'] == 'editar_proveedor') {
     $id = $_POST['id'];
     $apellido = $_POST['apellido'];
     $nombre = $_POST['nombre'];
@@ -558,7 +538,7 @@ if ($_SESSION['usuario'] != '') {
   }
 
   //************ Proceso Carga Proveedor **************//
-  if ($_POST['accion'] == 'add_proveedores') {
+  if (isset($_POST['accion']) && $_POST['accion'] == 'add_proveedores') {
     $apellido = $_POST['apellido'];
     $nombre = $_POST['nombre'];
     $tipodni = $_POST['tipodni'];

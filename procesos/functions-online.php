@@ -1161,7 +1161,7 @@ if (isset($_POST['productos'])) {
     $m = $_POST['m'];
     $marca = " and marca_producto='$m' ";
   }
-  if (isset($_POST['b']) && $_POST['b'] != undefined) {
+  if (isset($_POST['b']) && $_POST['b'] != 'undefined') {
     $b = $_POST['b'];
     $busca = " and (detalle_producto like '%$b%' or codigo_producto like '%$b%'  or presentacion_producto like '%$b%' or modelo_producto like '%$b%' or descripcion_producto like '%$b%') ";
   }

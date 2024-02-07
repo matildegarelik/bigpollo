@@ -302,7 +302,7 @@ function envia_pedido() {
     disabled = "";
   }
 
-  modal += '                      <option value="2">CONTADO</option>' +
+//  modal += '                      <option value="2">CONTADO</option>' +
     '                    </select>' +
     '                  </div>' +
     '                  <div id="opciones_monto" class="group clearfix bounceIn animated hide" style="margin-bottom: 5px;margin-top: 20px;font-weight: bold;font-size: x-large;">' +
@@ -859,7 +859,7 @@ function consul_mov_diario() {
           esqueleto +=   '      <div class="shift">' + data.mov_diario[i].hora + '</div>' +
             '    </div>' +
             '    <div class="to-do pull-left" style="display: contents;">'+
-            '     <div class="title">' + data.mov_diario[i].razon + '<div class="pull-right" ><span class="fa fa-trash" onclick="del_mov('+data.mov_diario[i].id_transaccion+')"></span></div></div>' +
+//            '     <div class="title">' + data.mov_diario[i].razon + '<div class="pull-right" ><span class="fa fa-trash" onclick="del_mov('+data.mov_diario[i].id_transaccion+')"></span></div></div>' +
             '      <div class="subject" style="display: flex;">' + data.mov_diario[i].detalle + '</div>' +
             '    </div>' +
             '    <div class="to-do pull-right">';
@@ -2661,6 +2661,13 @@ function modal_pago(obj) {
     '            <div class="center" style="margin-top: 30px;">' +
     '              <span style="text-align:center;font-weight: bold;">Monto a Abonar:</span></br>' +
     '              <input type="number" id="monto_modal_pagos" name="quant[1]" onchange="cambiapreciopros();" min="500" max="" style="height: 45px;text-align: center;font-weight: bold;font-size: xx-large;" class="form-control input-number" value="">' +
+    '              </br></br><span style="text-align:center;font-weight: bold;">Opciones de pago:</span></br>' +
+    '              <select style="text-align:center;font-weight: bold;" class="form-control">' + 
+    '                 <option>Contado</option>'+
+    '                 <option>Transferencia</option>'+
+    '                 <option>Cheque</option>'+
+    '                 <option>Mercado Pago</option>'+
+    '              </select></br>' +
     '              </br></br><span style="text-align:center;font-weight: bold;">Observaciones:</span></br>' +
     '              <textarea placeholder="ingrese una observacion" id="detalle_modal_pagos" class="form-control"></textarea>' +
     '            </div>' +
