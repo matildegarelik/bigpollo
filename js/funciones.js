@@ -181,7 +181,6 @@ function dibuja_canasta(){
                 url: "procesos/crud.php?",
                 data: string2,
                 success: function(data){
-                  console.log(data)
                   if(data!='FALSE'){
                     //console.log('entra al true');
                     window.location.href = "index.php?pagina=clientes&msg="+data;
