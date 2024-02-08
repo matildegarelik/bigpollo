@@ -1320,3 +1320,18 @@ div.hyperlinks > .nav-item >span{
 span.cliente_select>span{
   color:white;
 }
+#listado_productos > div {
+  color:#fff;
+}
+#listado_clientes a > div > div.saldo{
+  color:#000;
+  text-align: center;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 30px;
+  margin-top: 20px;
+}
+
+#listado_clientes a:hover{
+  text-decoration: none;
+}

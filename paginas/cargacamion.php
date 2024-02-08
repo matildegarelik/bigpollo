@@ -260,6 +260,7 @@
 
   function guarda_pedido() {
     var items_json = JSON.stringify(carrito.items);
+    console.log(carrito.items)
     var string = 'a=add_carga&c=' + carrito.cliente_pedido + '&f=' + carrito.fecha_pedido + '&d=' + carrito.detalle_pedido + '&t=' + carrito.total_pedido + '&i=' + items_json + '&vd=0';
 
     $.ajax({

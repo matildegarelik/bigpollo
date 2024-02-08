@@ -75,8 +75,7 @@ if ($_SESSION['usuario'] != "") {
 				$prod = $carrito[$i]['id'];
 				$cod = $carrito[$i]['codigo'];
 				$cant = $carrito[$i]['cantidad'];
-				$mont = $carrito[$i]['precio'];
-
+				
 				$add = $link->query("INSERT INTO stock_depositos SET idcarga_stockd='$ultimoid', idpersona_stockd='$cliente', idcamion_stockd='$cliente', idproducto_stockd='$prod', cantidad_stockd='$cant', fecha_stockd='$fecha', quien_stockd='$quien', estado_stockd='1', tipomov_stockd='carga', cuando_stockd='$cuando' ") or die(mysqli_error());
 			}
 		}

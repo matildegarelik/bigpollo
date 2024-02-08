@@ -1,4 +1,4 @@
-<?php if ($_GET['add'] == '1') {
+<?php if (isset($_GET['add']) && $_GET['add'] == '1') {
     include('clientes_add.php');
 } else { ?><div class="container-fluid">
 
@@ -32,7 +32,7 @@
                                     </div>
                                 </a>
                                 <div class="ml-auto">
-                                    <h2 class="counter text-primary"><?php echo $cuento_nuevos; ?></h2>
+                                    <h2 class="counter text-primary"><?php if(isset($cuento_nuevos))echo $cuento_nuevos; else echo 0;?></h2>
                                 </div>
                             </div>
                         </div>
@@ -106,7 +106,7 @@
                                 <h4 class="card-title">Listado</h4>
                             </div>
                             <div class="col-md-2"><small class="form-control-feedback"> Desde </small>
-                                <input class="form-control filtro" type="date" id="d" name="d" value="<?php if ($_GET['d']) {
+                                <input class="form-control filtro" type="date" id="d" name="d" value="<?php if (isset( $_GET['d']) && $_GET['d']) {
                                                                                                             echo $_GET['d'];
                                                                                                         } else {
                                                                                                             echo date('Y-m-01');
@@ -115,7 +115,7 @@
 
                             </div>
                             <div class="col-md-2"><small class="form-control-feedback"> Hasta </small>
-                                <input class="form-control filtro" type="date" id="h" name="h" value="<?php if ($_GET['h']) {
+                                <input class="form-control filtro" type="date" id="h" name="h" value="<?php if (isset($_GET['h']) && $_GET['h']) {
                                                                                                             echo $_GET['h'];
                                                                                                         } else {
                                                                                                             echo date('Y-m-d');
@@ -123,7 +123,7 @@
 
 
                             </div>
-                            <div class="col-md-3" style="align-self: center;"><?php if ($_GET['d'] || $_GET['h']) { ?><a href="index.php?pagina=estadocamion">Quitar Filtros</a><?php } ?></div>
+                            <div class="col-md-3" style="align-self: center;"><?php if (isset($_GET['d']) || isset($_GET['h'])) { ?><a href="index.php?pagina=estadocamion">Quitar Filtros</a><?php } ?></div>
                             <!-- <div id="total_periodo">Total $</div> -->
                         </div>
                         <h6 class="card-subtitle"></h6>
@@ -145,12 +145,12 @@
                                 </thead>
                                 <tbody>
                                     <?php
-                                    if ($_GET['d']) {
+                                    if (isset($_GET['d']) && $_GET['d']) {
                                         $desde = $_GET['d'];
                                     } else {
                                         $desde = date('Y-m-01');
                                     }
-                                    if ($_GET['h']) {
+                                    if (isset($_GET['h']) && $_GET['h']) {
                                         $hasta = $_GET['h'];
                                     } else {
                                         $hasta = date('Y-m-d 23:59:59');
@@ -162,8 +162,7 @@
                                             WHERE `estado_stockd` != 0 AND `tipomov_stockd` LIKE 'carga' GROUP BY idcarga_stockd
                                             ORDER BY idcarga_stockd DESC");
                                     while ($row = mysqli_fetch_array($con_pedidos)) {
-                                        $preciocrudo = number_format($row['monto'], 0, '.', '');
-                                        $acumula = ($acumula + $preciocrudo);
+                                        
                                     ?>
                                         <tr>
 

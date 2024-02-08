@@ -115,13 +115,13 @@ if ($_POST['a'] == 'add') {
   $detalle = $_POST['d'];
   $observacion = $_POST['d'];
   $monto_abona = $_POST['ma'];
-  if ($monto_abona == undefined) {
+  if ($monto_abona == 'undefined') {
     $monto_abona = '0';
   }
-  if ($observacion == undefined || $observacion == '') {
+  if ($observacion == 'undefined' || $observacion == '') {
     $observacion = null;
   }
-  if ($detalle == undefined || $detalle == '') {
+  if ($detalle == 'undefined' || $detalle == '') {
     $detalle = null;
   }
   $total = $_POST['t'];
@@ -204,10 +204,10 @@ if ($_POST['a'] == 'retiro') {
   $detalle = $_POST['d'];
   $tipo = $_POST['t'];
   $monto_retiro = $_POST['m'];
-  if ($monto_retiro == undefined) {
+  if ($monto_retiro == 'undefined') {
     $monto_retiro = '0';
   }
-  if ($detalle == undefined || $detalle == '') {
+  if ($detalle == 'undefined' || $detalle == '') {
     $detalle = null;
   }
 
@@ -231,10 +231,10 @@ if ($_POST['a'] == 'pago') {
   $fecha = date('Y-m-d H:i:s');
   $detalle = $_POST['d'];
   $monto_abona = $_POST['t'];
-  if ($monto_abona == undefined) {
+  if ($monto_abona == 'undefined') {
     $monto_abona = '0';
   }
-  if ($detalle == undefined || $detalle == '') {
+  if ($detalle == 'undefined' || $detalle == '') {
     $detalle = null;
   }
 
@@ -951,7 +951,7 @@ if (isset($_POST['clientes'])) {
   $hoy = '%' . date('-m-d');
   $usuario = $_POST['u'];
 
-  if ($_POST['b'] != '' && $_POST['b'] != undefined) {
+  if ($_POST['b'] != '' && $_POST['b'] != 'undefined') {
     $palabra = $_POST['b'];
     $busca = " and (nombre_clientes like '%$palabra%' or apellido_clientes like '%$palabra%' or razon_com_clientes like '%$palabra%' or notas_clientes like '%$palabra%' or direccion_clientes like '%$palabra%')";
   } else {

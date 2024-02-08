@@ -301,8 +301,7 @@ function envia_pedido() {
     disabled = "";
   }
 
-  modal += '                      <option value="2">CONTADO</option>' +
-    '                    </select>' +
+  modal += '            </select>' +
     '                  </div>' +
     '                  <div id="opciones_monto" class="group clearfix bounceIn animated hide" style="margin-bottom: 5px;margin-top: 20px;font-weight: bold;font-size: x-large;">' +
     '                    <label for="motoabona" style="font-size: 18px;text-align: center;width: 100%;">Ingrese el monto a cancelar' +
@@ -858,7 +857,7 @@ function consul_mov_diario() {
           esqueleto +=   '      <div class="shift">' + data.mov_diario[i].hora + '</div>' +
             '    </div>' +
             '    <div class="to-do pull-left" style="display: contents;">'+
-            '     <div class="title">' + data.mov_diario[i].razon + '<div class="pull-right" ><span class="fa fa-trash" onclick="del_mov('+data.mov_diario[i].id_transaccion+')"></span></div></div>' +
+            '     <div class="title">' + data.mov_diario[i].razon + '<div class="pull-right" ></div></div>' +
             '      <div class="subject" style="display: flex;">' + data.mov_diario[i].detalle + '</div>' +
             '    </div>' +
             '    <div class="to-do pull-right">';
@@ -983,6 +982,7 @@ function del_oficial_mov(transaccion){
 function consul_cc_clientes() {
   var datas = JSON.parse(localStorage.clientes);
   var cliente = datas[localStorage.lectura].id;
+  console.log(cliente)
   var dataString = 'consul_cc_clientes&u=' + localStorage.id + '&c=' + cliente;
 
   $.ajax({
@@ -1346,7 +1346,8 @@ function eliminarProductoEn(indice) {
 }
 
 function productoscate() {
-  var dataString = 'categorias&u=' + localStorage.id;
+  //var dataString = 'categorias&u=' + localStorage.id;
+  var dataString = 'productos&u=' + localStorage.id;
   console.log('Entra a mostrar productos cate')
   $.ajax({
     type: "POST",
@@ -1357,37 +1358,57 @@ function productoscate() {
     cache: false,
     success: function(data) {
       if (data.estado == 'true') {
-
         console.log(data);
-        var cantidad = data.categorias.length;
+        
+        var cantidad = data.productos.length;
         esqueleto = '<div class="container">' +
-          '<div class="row" style="padding-bottom: 10px;"><input type="search" data-ide="1" id="search_prod" placeholder="Buscar Producto..." style="width:80%"> <button onclick="buscaprod()" class="btn btn-success" style="width:15%; border-radius:0px;padding: 3px 15px 3px 15px">Ok</button></div>' +
-          '<div class="row">';
+        //  '<div class="row" style="padding-bottom: 10px;"><input type="search" data-ide="' + id + '" id="search_prod_cat" placeholder="Buscar Producto..." style="width:80%" > <button onclick="filtra_prod()" class="btn btn-success" style="border-radius:0px;padding: 3px 15px 3px 15px">Ok</button></div>'; +
+        '<div class="row">';
 
         for (var i = 0; i < cantidad; i++) {
-          if (data.categorias[i].titulo != 'Cerdo') {
-            if (data.categorias[i].titulo == 'Varios') {
-              esqueleto += '</div><div class="row"><div class="col-xs-12" style="margin-bottom: 25px;">' +
-                '	<div class="my-list" onclick="productoslistss(' + data.categorias[i].id + ')" style="height: 130px;background-color: white;color: brown;text-align: center;border-radius: 15px;">' +
-                '		<img style="border-radius: 10%;height: 100%;" src="img/categorias/' + data.categorias[i].imagen + '" alt="' + data.categorias[i].titulo + '" />'
-                //  	+'		<h4>'+data.productos[i].marca+'</h4>'
-                +
-                '	</div>' +
-                '</div>';
-            } else {
-              esqueleto += '<div class="col-xs-6" style="margin-bottom: 25px;">' +
-                '	<div class="my-list" onclick="productoslistss(' + data.categorias[i].id + ')" style="height: 130px;background-color: white;color: brown;text-align: center;border-radius: 10%;">' +
-                '		<img style="width:100%;border-radius: 10%;height: 100%;" src="img/categorias/' + data.categorias[i].imagen + '" alt="' + data.categorias[i].titulo + '" />'
-                //  	+'		<h4>'+data.productos[i].marca+'</h4>'
-                +
-                '	</div>' +
-                '</div>';
-            }
+          if (data.productos[i].foto != 'undefined') {
+            var foto = data.productos[i].foto;
+          } else {
+            var foto = 'sin-imagen.png';
           }
+          esqueleto += '<div class="col-xs-12"';
+          if (data.productos[i].stock != '0' && data.productos[i].stock != '00') {
+            esqueleto += ' onclick="add_producto(' + data.productos[i].id + ')" ';
+          }
+          esqueleto += ' style="background-color: #0a1050;display:flex;border-radius: 5px;margin-bottom: 10px;'; //height: 40px
+          if (data.productos[i].stock == '0' || data.productos[i].stock == '00') {
+            esqueleto += ' opacity: 0.4;';
+            data.productos[i].stock = '00';
+          }
+          let stock = parseFloat(data.productos[i].stock) - parseFloat(cantEnPedido(data.productos[i].id));
+          if (stock < 10) {
+            stock = '0' + stock;
+          }
+          esqueleto += '">' +
+            '<div class="col-xs-2" style="display:flex;margin-left: -15px;padding-left: 0px;">' +
+            '	<div class="my-list" style="margin: auto;overflow: hidden;height: 40px;width: 40px;background-color: white;color: brown;text-align: center;border-radius: 10%;padding-top: 1px;">' +
+            '		<img style="width:100%;border-radius: 25%;" onerror="this.src=\'img/prod/sin-imagen.png\'" src="img/prod/' + foto + '" alt="' + data.productos[i].detalle + '" />'
+            //+'		<h4>'+data.productos[i].codigo+'</h4>'
+            +
+            '	</div>' +
+            '</div>' +
+            '<div class="col-xs-9" style="padding-top: 1%;font-size: small;margin-left: -20px;width: 100%;">' +
+            data.productos[i].titulo + ' (' + data.productos[i].presentacion + ')' +
+            '</div>' +
+            '<div class="col-xs-1" style="display:flex;right: 10px;">' //top: 10px;
+            +
+            '<span class="contador-productos" style="margin: auto;">' + stock + '</span>' +
+            '</div>' +
+            '</div>';
 
+          /*
+
+          */
         }
-        esqueleto += '</div>' +
+        esqueleto += '<center style="padding-top: 15px;"><button class="btn" onclick="lnkint(\'productos\')" style="background-color:#2196f3;"><i class="ion-ios-arrow-back"></i> Regresar</button></center>' +
+          '  </div>' +
           '</div>';
+        $('#listado_productos').html(esqueleto);
 
         $('#listado_productos').html(esqueleto);
         //} else {alert('error al recuperar categorias');}
@@ -1809,43 +1830,50 @@ function clienteslist(prod, busca) {
     crossDomain: true,
     cache: false,
     success: function(data) {
-
       if (data.estado == 'true') {
         console.log('entra al true');
         localStorage.clientes = JSON.stringify(data.clientes);
-
-        var i;
         var esqueleto = '';
+        var saldo=0;
 
-        for (i = 0; i < data.clientes.length; i++) {
-
-          //Get the current row
-          var row = data.clientes[i];
-          esqueleto += '<a href="javascript:void(0)" onclick="lectura(' + i + ');';
-          //console.log('prod '+prod);
-          if (prod != '0') {
-            esqueleto += ' add_producto(' + prod + '); ';
-          }
-          esqueleto += '">' +
-            '    <div  class="media  heading flipInY animated">' +
-            '       <div class="price" style="height: 100px;padding-top: 10%">';
-            if(i < 10){esqueleto +='0'+i;}else{esqueleto += i;}
-          esqueleto +=' </div>' +
-            '    <div class="media-body pl-3" style="padding-top: 0px;">' +
-            '       <div class="address" style="margin-top: 15px;">' + row.rubro + ' <br/>' + row.razon + '<br/>';
-            if(i!=0){esqueleto +='<span style="font-size: 12px">Dir: ' + row.direccion + ' ' + row.dirnum + '</span>';}
-            esqueleto +='</div> </div>' +
-            '   </div>' +
-            '</a>';
+        for (var i = 0; i < data.clientes.length; i++) {
+          (function(index) { // Utilizamos una función de cierre (closure)
+            var row = data.clientes[index];
+            $.ajax({
+              type: "POST",
+              url: url_gral,
+              data: 'consul_cc_clientes&u=' + localStorage.id + '&c=' + row.id,
+              dataType: 'json',
+              crossDomain: true,
+              cache: false,
+              success: function(data2) {
+                saldo = data2.saldo;
+                esqueleto += '<a href="javascript:void(0)" onclick="lectura(' + index + ');';
+                if (prod != '0') {
+                  esqueleto += ' add_producto(' + prod + '); ';
+                }
+                esqueleto += '">' +
+                  '    <div  class="media  heading flipInY animated">' +
+                  '       <div class="price" style="height: 100px;padding-top: 10%">';
+                if(index < 10) {esqueleto += '0' + index;} else {esqueleto += index;}
+                esqueleto += ' </div>' +
+                  '    <div class="media-body pl-3" style="padding-top: 0px;">' +
+                  '       <div class="address" style="margin-top: 15px;">' + row.rubro + ' <br/>' + row.razon + '<br/>';
+                if(index != 0) {esqueleto += '<span style="font-size: 12px">Dir: ' + row.direccion + ' ' + row.dirnum + '</span>';}
+                esqueleto += '</div> </div>' +
+                  '   <div class="saldo">SALDO: $ ' + saldo + '</div>' +
+                  '   </div>' +
+                  '</a>';
+                $('#listado_clientes').html(esqueleto);
+              }
+            });
+          })(i); // Llamamos a la función de cierre con el valor actual de i
         }
-
-
-        $('#listado_clientes').html(esqueleto);
       } else {
         alert('error al recuperar');
       }
     }
-  })
+  });
 }
 
 
@@ -2660,6 +2688,13 @@ function modal_pago(obj) {
     '            <div class="center" style="margin-top: 30px;">' +
     '              <span style="text-align:center;font-weight: bold;">Monto a Abonar:</span></br>' +
     '              <input type="number" id="monto_modal_pagos" name="quant[1]" onchange="cambiapreciopros();" min="500" max="" style="height: 45px;text-align: center;font-weight: bold;font-size: xx-large;" class="form-control input-number" value="">' +
+    '              </br></br><span style="text-align:center;font-weight: bold;">Opciones de pago:</span></br>' +
+    '              <select id="opcion_modal_pagos" class="form-control">'+
+    '               <option>Contado</option' +
+    '               <option>Transferencia</option' +
+    '               <option>Cheque</option' +
+    '               <option>Mercado Pago</option' +
+    '              </select>' +
     '              </br></br><span style="text-align:center;font-weight: bold;">Observaciones:</span></br>' +
     '              <textarea placeholder="ingrese una observacion" id="detalle_modal_pagos" class="form-control"></textarea>' +
     '            </div>' +
