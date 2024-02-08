@@ -293,6 +293,12 @@ if ($_SESSION['usuario'] != '') {
     $nombre = $_POST['nombre'];
     $tipodni = $_POST['tipodni'];
     $dni = $_POST['dni'];
+    $sexo = $_POST['sexo'];
+    if ($sexo == '' || $sexo == 'undefined') {
+      $sexo = 'H';
+    }
+
+    $ecivil = $_POST['ecivil'];
     $cumple = $_POST['cumple'];
     if ($cumple == '') {
       $cumple = '0000-00-00';
@@ -346,7 +352,7 @@ if ($_SESSION['usuario'] != '') {
     }
     // fin geoencode
     $sql_update_client = "UPDATE clientes SET tipodni_clientes='$tipodni',	dni_clientes='$dni',	fechacumple_clientes='$cumple',	email_clientes='$email',	celular_clientes='$celular',	telefono_clientes='$telfijo',	provincia_clientes='$provincia',	ciudad_clientes='$ciudad',	direccion_clientes='$direccion_com',	dirnum_clientes='$numero_com',
-          piso_clientes='$piso_com', depto_clientes='$depto_com',	foto_clientes='$upload',	notas_clientes='$notas',	estado_clientes='1',	lat_clientes='$latitud',	lng_clientes='$longitud',	 razon_com_clientes='$razon', cuitcuil_com_clientes='$cuitcuil', condicioniva_com_clientes='$condicioniva', rubro_com_clientes='$rubro', direccion_com_clientes='$direccion_com',
+          piso_clientes='$piso_com', depto_clientes='$depto_com',	estadocivil_clientes='$ecivil',	foto_clientes='$upload',	sexo_clientes='$sexo',	notas_clientes='$notas',	estado_clientes='1',	lat_clientes='$latitud',	lng_clientes='$longitud',	 razon_com_clientes='$razon', cuitcuil_com_clientes='$cuitcuil', condicioniva_com_clientes='$condicioniva', rubro_com_clientes='$rubro', direccion_com_clientes='$direccion_com',
            quien_clientes='$quien',	cuando_clientes='$cuando', asignado_clientes='$asignado', financiacion_com_clientes='$financia', topefinancia_com_clientes='$limite'  where id_clientes = '$id' ";
 
     $inserta = $link->query($sql_update_client);

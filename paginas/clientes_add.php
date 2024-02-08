@@ -37,18 +37,18 @@
             </div>
 
             <div class="col-md-4 m-b-20">
-              <select name="tipodni" id="tipodni" class="form-control tipodni" required="">
-                <option value="" disabled selected>Seleccione Tipo documento</option>
-                <option value="DNI" <?php if (isset($row['tipodni_clientes']) && $row['tipodni_clientes'] == 'DNI') {
-                                      echo ' selected';
-                                    } ?>>DNI</option>
-                <option value="CUIT" <?php if (isset($row['tipodni_clientes']) && $row['tipodni_clientes'] == 'CUIT') {
+                <select name="tipodni" id="tipodni" class="form-control tipodni" required="">
+                  <option value="" disabled selected>Seleccione Tipo documento</option>
+                  <option value="DNI" <?php if (isset($row['tipodni_clientes']) && $row['tipodni_clientes'] == 'DNI') {
                                         echo ' selected';
-                                      } ?>>CUIT</option>
-                <option value="CUIL" <?php if (isset($row['tipodni_clientes']) && $row['tipodni_clientes'] == 'CUIL') {
-                                        echo ' selected';
-                                      } ?>>CUIL</option>
-              </select>
+                                      } ?>>DNI</option>
+                  <option value="CUIT" <?php if ( isset($row['tipodni_clientes']) && $row['tipodni_clientes'] == 'CUIT') {
+                                          echo ' selected';
+                                        } ?>>CUIT</option>
+                  <option value="CUIL" <?php if (isset($row['tipodni_clientes']) && $row['tipodni_clientes'] == 'CUIL') {
+                                          echo ' selected';
+                                        } ?>>CUIL</option>
+                </select>
             </div>
             <div class="col-md-4 m-b-20">
               <input type="number" placeholder="Numero documento (sin guion)" maxlength="11" class="form-control cuit" name="cuit" />

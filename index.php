@@ -27,7 +27,7 @@ if ($_SESSION['usuario'] != '') { ?>
   </head>
 
   <body class="skin-default fixed-layout">
-    <?php if (isset($_GET['msg']) && $_GET['msg'] == 'error') {
+  <?php if (isset($_GET['msg']) && $_GET['msg'] == 'error') {
       echo '<script>alert("Datos Incorrectos")</script>';
     } ?>
 
@@ -43,7 +43,7 @@ if ($_SESSION['usuario'] != '') { ?>
 
       <div class="page-wrapper" style="min-height: 879px;">
         <?php
-        if (!isset($_GET['pagina']) || !$_GET['pagina']) {
+        if (!isset($_GET['pagina'])) {
           if ($_SESSION['tipo'] == 'Despacho') {
             include 'paginas/estadocamion.php';
           } else {
@@ -61,7 +61,7 @@ if ($_SESSION['usuario'] != '') { ?>
     </div>
 
     <a id="back-to-top" href="#" class="btn btn-primary btn-lg back-to-top" role="button" title="Click para ir al inicio" data-toggle="tooltip" data-placement="left"> <i class="ti-angle-double-up"></i></a>
-    <script src="./js/funciones.js"></script>
+    <script src="./js/funciones.js?v=1"></script>
 
     <script src="./js/popper.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
@@ -107,10 +107,10 @@ if ($_SESSION['usuario'] != '') { ?>
       });
     </script>
 
-    <?php if (!$_GET['pagina']) {
+    <?php if (!isset($_GET['pagina'])) {
       echo '<script src="./js/clima.js"></script> ';
     } ?>
-    <?php if ($_GET['pagina'] == 'clientes') {
+    <?php if (isset($_GET['pagina']) && $_GET['pagina'] == 'clientes') {
       echo '<script src="./js/footable.all.min.js"></script>
                  <script src="./js/footable-init.js"></script>';
     } ?>

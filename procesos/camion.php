@@ -57,7 +57,7 @@ if ($_SESSION['usuario'] != "") {
 		$fecha = $_POST['f'];
 		$detalle = $_POST['d'];
 		$observacion = $_POST['d'];
-		if ($observacion == undefined) {
+		if (!isset($observacion)) {
 			$observacion = '';
 		}
 		$total = $_POST['t'];
@@ -131,7 +131,7 @@ if ($_SESSION['usuario'] != "") {
 		$fecha = $_POST['f'];
 		$detalle = $_POST['d'];
 		$observacion = $_POST['d'];
-		if ($observacion == undefined) {
+		if (!isset($observacion)) {
 			$observacion = '';
 		}
 		$total = $_POST['t'];

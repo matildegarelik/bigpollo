@@ -8,7 +8,7 @@
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">Inicio</a></li>
         <li class="breadcrumb-item"><a href="index.php?pagina=clientes">Clientes</a></li>
-        <?php if (isset($_GET['buscar']) && $_GET['buscar']) {
+        <?php if (isset($_GET['buscar'])) {
           echo '<li class="breadcrumb-item"><a href="#">Buscar: [' . $_GET['buscar'] . ']</a></li>';
         } ?>
       </ol>
@@ -25,7 +25,7 @@
     <div class="col-12">
       <div class="card">
         <div class="card-body">
-          <?php if (isset($_GET['buscar']) && $_GET['buscar']) {
+          <?php if (isset($_GET['buscar'])) {
             echo '<h4 class="card-title">Resulados de [' . $_GET['buscar'] . ']...</h4>';
           } else {
             echo '<h4 class="card-title">Listado</h4>';
@@ -54,12 +54,13 @@
               <tbody>
                 <?php
                 $busqueda = '';
-                if (isset($_GET['buscar']) && $_GET['buscar']) {
+                if (isset($_GET['buscar'])) {
                   $palabra = $_GET['buscar'];
                   $busqueda = "and (apellido_clientes like '%$palabra%' or nombre_clientes like '%$palabra%' or cuitcuil_com_clientes like '%$palabra%' or dni_clientes like '%$palabra%' or razon_com_clientes like '%$palabra%' or direccion_clientes like '%$palabra%' )";
                 }
                 //$con_clientes = $link->query("SELECT * FROM clientes inner join clientes_comercios on clientes_comercios.cliente_comclientes = clientes.id_clientes INNER join ciudad on ciudad.id_ciudad = clientes.ciudad_clientes where clientes_comercios.estado_comclientes ='1' order by clientes.apellido_clientes, clientes.nombre_clientes ASC ");
                 $con_clientes = $link->query("SELECT * FROM clientes left join ciudad on ciudad.id_ciudad = clientes.ciudad_clientes where estado_clientes !='0' $busqueda order by apellido_clientes ASC ");
+                
                 while ($row = mysqli_fetch_array($con_clientes)) {
                 ?>
                   <tr>

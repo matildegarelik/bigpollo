@@ -384,12 +384,7 @@ if (isset($_GET['e']) && $_GET['e'] == 'crcok') {
             </div>
         </div>
     </div>
-    <div class="ps__scrollbar-x-rail" style="left: 0px; bottom: 0px;">
-        <div class="ps__scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div>
-    </div>
-    <div class="ps__scrollbar-y-rail" style="top: 0px; height: 984px; right: 0px;">
-        <div class="ps__scrollbar-y" tabindex="0" style="top: 0px; height: 532px;"></div>
-    </div>
-</div> -->
+  
+</div>
 
 </div>

@@ -181,6 +181,7 @@ function dibuja_canasta(){
                 url: "procesos/crud.php?",
                 data: string2,
                 success: function(data){
+                  console.log(data)
                   if(data!='FALSE'){
                     //console.log('entra al true');
                     window.location.href = "index.php?pagina=clientes&msg="+data;
@@ -236,16 +237,6 @@ $('#agregar_proveedor').click(function(){
   var nombre = $('.nombre').val();
   var tipodni = $('.tipodni option:selected').val();
   var dni = $('.dni').val();
-  var sexoh = $('.sexoh').val();
-  var sexom = $('.sexom').val();
-
-  if( $('.sexoh').prop('checked') ) {
-      var sexo ='H';
-    }
-  if( $('.sexom').prop('checked') ) {
-      var sexo ='M';
-    }
-  var ecivil = $('.ecivil option:selected').val();
   var cumple = $('#cumple').val();
   console.log('toma cumple: '+$('#cumple').val());
   var email = $('.email').val();
@@ -270,7 +261,7 @@ $('#agregar_proveedor').click(function(){
   var depto_com = $('.depto_com').val();
   var notas = $('.notas').val();
   var upload = $('.upload').val();
-  var string2 = "accion=add_proveedores&apellido="+apellido+"&nombre="+nombre+"&tipodni="+tipodni+"&dni="+dni+"&sexo="+sexo+"&ecivil="+ecivil+"&cumple="+cumple+"&email="+email+"&email2="+email2+"&telfijo="+telfijo+"&celular="+celular+"&provincia="+provincia+"&ciudad="+ciudad+"&direccion="+direccion+"&numero="+numero+"&piso="+piso+"&depto="+depto+"&upload="+upload+"&razon="+razon+"&cuit="+cuit+"&condicioniva="+condicioniva+"&rubro="+rubro+"&telfijo_com="+telfijo_com+"&celular_com="+celular_com+"&direccion_com="+direccion_com+"&numero_com="+numero_com+"&piso_com="+piso_com+"&depto_com="+depto_com+"&notas="+notas;
+  var string2 = "accion=add_proveedores&apellido="+apellido+"&nombre="+nombre+"&tipodni="+tipodni+"&dni="+dni+"&cumple="+cumple+"&email="+email+"&email2="+email2+"&telfijo="+telfijo+"&celular="+celular+"&provincia="+provincia+"&ciudad="+ciudad+"&direccion="+direccion+"&numero="+numero+"&piso="+piso+"&depto="+depto+"&upload="+upload+"&razon="+razon+"&cuit="+cuit+"&condicioniva="+condicioniva+"&rubro="+rubro+"&telfijo_com="+telfijo_com+"&celular_com="+celular_com+"&direccion_com="+direccion_com+"&numero_com="+numero_com+"&piso_com="+piso_com+"&depto_com="+depto_com+"&notas="+notas;
   tomociudad = ciudad;
   // console.log('datos string2: '+string2);
           $.ajax({
