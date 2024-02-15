@@ -1,5 +1,6 @@
 //localStorage.clear();
-var url_gral ='https://bigpollo.mayoristasbahia.com/procesos/functions-online.php?';
+//var url_gral ='https://bigpollo.mayoristasbahia.com/procesos/functions-online.php?';
+var url_gral ='http://localhost/bigpollo/procesos/functions-online.php?';
 
 function addZero(i) {
     if (i < 10) {

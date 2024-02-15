@@ -173,7 +173,8 @@ function dibuja_canasta(){
     var upload = $('.upload').val();
     var financia = $('#financia').val();
     var limite_financia = $('#limitefinancia').val();
-    var string2 = "accion=add_clientes&apellido="+apellido+"&nombre="+nombre+"&tipodni="+tipodni+"&dni="+dni+"&sexo="+sexo+"&ecivil="+ecivil+"&cumple="+cumple+"&email="+email+"&email2="+email2+"&telfijo="+telfijo+"&celular="+celular+"&provincia="+provincia+"&ciudad="+ciudad+"&direccion="+direccion+"&numero="+numero+"&piso="+piso+"&depto="+depto+"&upload="+upload+"&razon="+razon+"&cuit="+cuit+"&condicioniva="+condicioniva+"&rubro="+rubro+"&telfijo_com="+telfijo_com+"&celular_com="+celular_com+"&direccion_com="+direccion_com+"&numero_com="+numero_com+"&piso_com="+piso_com+"&depto_com="+depto_com+"&notas="+notas+"&asignado="+asignado+"&financia="+financia+"&limite="+limite_financia;
+    var listap = $('#listap').val();
+    var string2 = "accion=add_clientes&apellido="+apellido+"&nombre="+nombre+"&tipodni="+tipodni+"&dni="+dni+"&sexo="+sexo+"&ecivil="+ecivil+"&cumple="+cumple+"&email="+email+"&email2="+email2+"&telfijo="+telfijo+"&celular="+celular+"&provincia="+provincia+"&ciudad="+ciudad+"&direccion="+direccion+"&numero="+numero+"&piso="+piso+"&depto="+depto+"&upload="+upload+"&razon="+razon+"&cuit="+cuit+"&condicioniva="+condicioniva+"&rubro="+rubro+"&telfijo_com="+telfijo_com+"&celular_com="+celular_com+"&direccion_com="+direccion_com+"&numero_com="+numero_com+"&piso_com="+piso_com+"&depto_com="+depto_com+"&notas="+notas+"&asignado="+asignado+"&financia="+financia+"&limite="+limite_financia+"&listap="+listap;
     tomociudad = ciudad;
     // console.log('datos string2: '+string2);
             $.ajax({
@@ -639,8 +640,6 @@ if(tipo=='1'){var paso = 'pedidos';}else {var paso = 'pagos';}
             type: "POST",
             url: "procesos/camion.php?",
             data: "a=liquida&idcarga="+idcarga+"&vendedor="+vendedor+"&camion="+camion+"&devoluciones="+devoluciones+"&montototal="+montototal+"&entrega="+entrega+"&observaciones="+observaciones+"&items="+items+"&fecha="+fecha,
-        //    crossDomain: true,
-          //	cache: false,
             success: function(data) {
               if(data=='true'){
                 window.location.href = "index.php?pagina=liquidaciones";
@@ -651,3 +650,32 @@ if(tipo=='1'){var paso = 'pedidos';}else {var paso = 'pagos';}
         });
 
       }
+function activarCliente(id){
+  $.ajax({
+    type: "POST",
+    url: "procesos/crud.php?",
+    data: "accion=activa_cliente&id="+id,
+    success: function(data) {
+      if(data=='TRUE'){
+        
+        location.reload()
+
+      }
+      console.log('Resultado= '+data)
+    }
+});
+}
+function desactivarCliente(id){
+  $.ajax({
+    type: "POST",
+    url: "procesos/crud.php?",
+    data: "accion=desactiva_cliente&id="+id,
+    success: function(data) {
+      if(data=='TRUE'){
+        location.reload()
+
+      }
+      console.log('Resultado= '+data)
+    }
+});
+}

@@ -163,6 +163,15 @@
                     ?>
                   </select>
                 </div>
+                <div class="col-md-3 m-b-20">
+                  <label for="ecivil">Lista de precios</label>
+                  <select class="form-control listap" id="listap" name="listap">
+                    <option value="" disabled="" selected="">Seleccione uno</option>
+                    <option value="1">Lista 1</option>
+                    <option value="2">Lista 2</option>
+                    <option value="3">Lista 3</option>
+                  </select>
+                </div>
               </div>
               <div class="row">
                 <div class="col-md-6 m-b-20">

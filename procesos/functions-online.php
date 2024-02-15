@@ -6,8 +6,8 @@ ini_set('memory_limit', '-1');
 
 date_default_timezone_set("America/Argentina/Buenos_Aires");
 setlocale(LC_ALL, "es_ES");
-$link = mysqli_connect("localhost", "u598064194_bigpollo", '?$yk:W;:4R+b');
-$db_select = mysqli_select_db($link, "u598064194_bigpollo");
+$link = mysqli_connect("localhost", "root", '');
+$db_select = mysqli_select_db($link, "bigpollo");
 
 //notificaciones
 $email_from = "info@prompt.com.ar";
@@ -100,14 +100,14 @@ if (isset($_POST['login'])) {
 
 //------------------------------------------------------//
 ///////////// Funcion registrar un gasto /////////////////
-if ($_POST['a'] == 'add_gasto') {
+if (isset($_POST['a']) && $_POST['a'] == 'add_gasto') {
   //INSERT INTO gastos SET personal_gasto='', tipo_gasto='', observacion_gasto='', monto_gasto='', relacion_gasto='', liquidado_gasto='', quien_gasto='', cuando_gasto='', estado_gasto='1'
 }
 
 //------------------------------------------------------//
 ///////////// Funcion realizar Pedido /////////////////
 
-if ($_POST['a'] == 'add') {
+if (isset($_POST['a']) && $_POST['a'] == 'add') {
   $personal = $_POST['u'];
   $cliente = $_POST['c'];
   $forma_pago = $_POST['fp'];
@@ -197,7 +197,7 @@ if ($_POST['a'] == 'add') {
 //------------------------------------------------------//
 ///////////// Funcion realizar Retiros /////////////////
 
-if ($_POST['a'] == 'retiro') {
+if (isset($_POST['a']) && $_POST['a'] == 'retiro') {
 
   $personal = $_POST['u'];
   $fecha = date('Y-m-d H:i:s');
@@ -225,11 +225,12 @@ if ($_POST['a'] == 'retiro') {
 //------------------------------------------------------//
 ///////////// Funcion realizar Pago /////////////////
 
-if ($_POST['a'] == 'pago') {
+if (isset($_POST['a']) && $_POST['a'] == 'pago') {
   $personal = $_POST['u'];
   $cliente = $_POST['c'];
   $fecha = date('Y-m-d H:i:s');
   $detalle = $_POST['d'];
+  $opcion = $_POST['o'];
   $monto_abona = $_POST['t'];
   if ($monto_abona == 'undefined') {
     $monto_abona = '0';
@@ -241,7 +242,7 @@ if ($_POST['a'] == 'pago') {
 
   $detallepedido = '';
 
-  $sql_inserto_monto = "INSERT INTO transaccion SET cliente='$cliente',	fecha='$fecha',	detalle='$detalle', observacion='$detalle',	monto2='$monto_abona', tipo_pedido='0', tipo='pago', abonada='0',	quien='$personal',	estado='1',	 forma_pago='2', liquidacion='0' ";
+  $sql_inserto_monto = "INSERT INTO transaccion SET cliente='$cliente',	fecha='$fecha',	detalle='$detalle', observacion='$detalle',	monto2='$monto_abona', tipo_pedido='0', tipo='pago', abonada='0',	quien='$personal',	estado='1',	 forma_pago='$opcion', liquidacion='0' ";
   file_put_contents('error.txt', $sql_inserto_monto);
   $inserto_monto = $link->query($sql_inserto_monto);
 
@@ -982,6 +983,7 @@ if (isset($_POST['clientes'])) {
   $data['clientes'][0]['rubro'] = '';
   $data['clientes'][0]['financiacion']['estado'] = 'false';
   $data['clientes'][0]['financiacion']['tope'] = '0';
+  $data['clientes'][0]['lista_precio']= '';
   if (mysqli_num_rows($clientes) > 0) {
 
     while ($row = mysqli_fetch_array($clientes)) {
@@ -997,7 +999,7 @@ if (isset($_POST['clientes'])) {
       $data['clientes'][$c]['longitud'] = trim($row['lon_com_clientes']);
       $data['clientes'][$c]['vendedor'] = trim($row['asignado_clientes']);
       $data['clientes'][$c]['cumple'] = trim($row['fechacumple_clientes']);
-      $data['clientes'][$c]['foto'] = trim($row['foto_com_clientes']);
+      $data['clientes'][$c]['foto'] = trim($row['foto_clientes']);
       $data['clientes'][$c]['dni'] = trim($row['dni_clientes']);
       $data['clientes'][$c]['direccion'] = trim($row['direccion_clientes']);
       $data['clientes'][$c]['dirnum'] = trim($row['dirnum_clientes']);
@@ -1005,7 +1007,7 @@ if (isset($_POST['clientes'])) {
       $data['clientes'][$c]['dirnum_com'] = trim($row['dirnum_com_clientes']);
       $data['clientes'][$c]['razon'] = trim($row['razon_com_clientes']);
       $data['clientes'][$c]['id_rubro'] = trim($row['rubro_com_clientes']);
-      $data['clientes'][$c]['rubro'] = trim($row['nombre_rubro']);
+      $data['clientes'][$c]['rubro'] = trim($row['rubro_com_clientes']);
       if ($row['financiacion_com_clientes'] == '1' && $row['id_clientes'] != '1') {
         $data['clientes'][$c]['financiacion']['estado'] = 'true';
         $data['clientes'][$c]['financiacion']['tope'] = $row['topefinancia_com_clientes'];
@@ -1013,6 +1015,7 @@ if (isset($_POST['clientes'])) {
         $data['clientes'][$c]['financiacion']['estado'] = 'false';
         $data['clientes'][$c]['financiacion']['tope'] = '0';
       }
+      $data['clientes'][$c]['lista_precio'] = trim($row['lista_precio']);
 
       $c++;
     }
@@ -1117,7 +1120,9 @@ if (isset($_POST['productos_a_devolver'])) {
         $data['productos'][$p]['codigo'] = trim($row['codigo_producto']);
         $data['productos'][$p]['titulo'] = trim($row['detalle_producto']);
         $data['productos'][$p]['descripcion'] = trim($row['descripcion_producto']);
-        $data['productos'][$p]['precio'] = trim($row['precio_producto']);
+        $data['productos'][$p]['precio1'] = trim($row['precio_producto']);
+        $data['productos'][$p]['precio2'] = trim($row['precio_producto2']);
+        $data['productos'][$p]['precio3'] = trim($row['precio_producto3']);
         $data['productos'][$p]['categoria_id'] = trim($row['categoria_producto']);
         $data['productos'][$p]['categoria'] = trim($row['titulo_categoria']);
         $data['productos'][$p]['marca_id'] = trim($row['marca_producto']);
@@ -1151,6 +1156,7 @@ if (isset($_POST['productos'])) {
   $categoria = '';
   $marca = '';
   $busca = '';
+  $data = [];
   $filtro = ''; //marca - categorias -
 
   if (isset($_POST['c'])) {
@@ -1175,7 +1181,7 @@ if (isset($_POST['productos'])) {
     }
   }
 
-  $productos = $link->query("SELECT * FROM productos INNER JOIN categorias on categorias.id_categoria = productos.categoria_producto LEFT JOIN marcas on marcas.id_marca = productos.marca_producto WHERE productos.estado_producto='1' $categoria $marca $busca $filtro") or die(mysqli_error());
+  $productos = $link->query("SELECT * FROM productos LEFT JOIN categorias on categorias.id_categoria = productos.categoria_producto LEFT JOIN marcas on marcas.id_marca = productos.marca_producto WHERE productos.estado_producto='1' $categoria $marca $busca $filtro") or die(mysqli_error());
   $p = '0';
   if (mysqli_num_rows($productos) > 0) {
     while ($row = mysqli_fetch_array($productos)) {
@@ -1204,7 +1210,9 @@ if (isset($_POST['productos'])) {
         $data['productos'][$p]['codigo'] = trim($row['codigo_producto']);
         $data['productos'][$p]['titulo'] = trim($row['detalle_producto']);
         $data['productos'][$p]['descripcion'] = trim($row['descripcion_producto']);
-        $data['productos'][$p]['precio'] = trim($row['precio_producto']);
+        $data['productos'][$p]['precio1'] = trim($row['precio_producto']);
+        $data['productos'][$p]['precio2'] = trim($row['precio_producto2']);
+        $data['productos'][$p]['precio3'] = trim($row['precio_producto3']);
         $data['productos'][$p]['categoria_id'] = trim($row['categoria_producto']);
         $data['productos'][$p]['categoria'] = trim($row['titulo_categoria']);
         $data['productos'][$p]['marca_id'] = trim($row['marca_producto']);
@@ -1216,7 +1224,7 @@ if (isset($_POST['productos'])) {
         $p++;
       }
     }
-    if ($data == '') {
+    if ($data == []) {
       $data['estado'] = 'false';
     }
   } else {
@@ -1295,6 +1303,7 @@ if (isset($_POST['sincroniza'])) {
     $data['clientes'][$c]['razon'] = trim($row['razon_comclientes']);
     $data['clientes'][$c]['id_rubro'] = trim($row['rubro_comclientes']);
     $data['clientes'][$c]['rubro'] = trim($row['nombre_rubro']);
+    $data['clientes'][$c]['lista_precio'] = trim($row['lista_precio']);
     $c++;
   }
 
@@ -1316,7 +1325,9 @@ if (isset($_POST['sincroniza'])) {
     $data['productos'][$p]['id'] = $row['id_producto'];
     $data['productos'][$p]['codigo'] = trim($row['codigo_producto']);
     $data['productos'][$p]['detalle'] = trim($row['detalle_producto']);
-    $data['productos'][$p]['precio'] = trim($row['precio_producto']);
+    $data['productos'][$p]['precio1'] = trim($row['precio_producto']);
+    $data['productos'][$p]['precio2'] = trim($row['precio_producto2']);
+    $data['productos'][$p]['precio3'] = trim($row['precio_producto3']);
     $data['productos'][$p]['categoria_id'] = trim($row['categoria_producto']);
     $data['productos'][$p]['categoria'] = trim($row['titulo_categoria']);
     $data['productos'][$p]['marca_id'] = trim($row['marca_producto']);

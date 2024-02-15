@@ -77,6 +77,8 @@ function add_producto(id) {
       if (localStorage.productos != undefined) {
         data = JSON.parse(localStorage.productos)
       }
+      
+      var cliente = JSON.parse(localStorage.clientes)[localStorage.lectura];
 
       var cantidad = data.length;
       var stock = 1;
@@ -87,7 +89,9 @@ function add_producto(id) {
           var descripcion = data[i].titulo;
           var img = data[i].foto;
           var codigo = data[i].codigo;
-          var precio = data[i].precio;
+          var precio = data[i].precio1;
+          if(cliente.lista_precio==2) precio = data[i].precio2;
+          if(cliente.lista_precio==3) precio = data[i].precio3;
           var titulo = data[i].titulo;
           stock = data[i].stock;
           if (img == 'undefined' || img == undefined) {
@@ -188,7 +192,7 @@ function add_producto(id) {
           allowOutsideClick: false,
           onClose: () => {
             //Aca hacemos que vaya al carrito.
-            lnkint('productos');
+            //lnkint('pedido');
           }
         })
       }
@@ -222,7 +226,7 @@ function prod_cliente(id) {
 //------------------------------------------------//
 function confirmaaddprod() {
   var pedido = [];
-
+  var idprod=$('#id_pop').val();
   if (localStorage.pedido) {
     pedido = JSON.parse(localStorage.pedido);
   } else {
@@ -231,39 +235,191 @@ function confirmaaddprod() {
     pedido.id_cliente = data[localStorage.lectura].id;
     pedido.nombre_cliente = data[localStorage.lectura].nombre + ' ' + data[localStorage.lectura].apellido;
   }
-
-  pedido.push({
-    id: $('#id_pop').val(),
-    codigo: $('#codigo_pop').val(),
-    cantidad: $('#cant_prodmodal').val(),
-    foto: $('#foto_pop').val(),
-    titulo: $('#titulo_pop').val(),
-    detalle: $('#detalle_pop').val(),
-    preciou: $('#precio_prod').val(),
-    subtotal: $('#subtotal_pop').html(),
-    descripcion: $('#descripcion_pop').val()
-  });
-  if (localStorage.pedido = JSON.stringify(pedido)) {
-    $('#producto_pop').modal('hide');
-    listado_pedidos();
-    Swal.fire({
-      // position: 'top-end',
-      type: 'success',
-      title: 'El producto se cargo al pedido correctamente',
-      //html: '',
-      showConfirmButton: false,
-      timer: 2000,
-      allowOutsideClick: false,
-      onClose: () => {
-        //Aca hacemos que vaya al carrito.
-        lnkint('pedido');
-        console.log("Estoy yendo");
-
-      }
-    })
+  var esta = false;
+  var valido = true;
+  for (let i = 0; i < pedido.length; i++) {
+    if (pedido[i].id === idprod) {
+        pedido[i].cantidad += parseInt($('#cant_prodmodal').val());
+        esta=true;
+        break;
+    }
   }
+  if(!esta){
+    var precio = $('#precio_prod').val()
+    if(precio==undefined || precio.trim()=='' || precio=='undefined'){
+      valido=false;
+      Swal.fire({
+        // position: 'top-end',
+        type: 'info',
+        title: 'Precio para esta lista de cliente no disponible',
+        //html: '',
+        showConfirmButton: true
+      })
+      $('#producto_pop').modal('hide');
+      return;
+    }else{
+      pedido.push({
+        id: $('#id_pop').val(),
+        codigo: $('#codigo_pop').val(),
+        cantidad: $('#cant_prodmodal').val(),
+        foto: $('#foto_pop').val(),
+        titulo: $('#titulo_pop').val(),
+        detalle: $('#detalle_pop').val(),
+        preciou: $('#precio_prod').val(),
+        subtotal: $('#subtotal_pop').html(),
+        descripcion: $('#descripcion_pop').val()
+      });
+    }
+  }
+  
+  if(valido){
+    if (localStorage.pedido = JSON.stringify(pedido)) {
+      $('#producto_pop').modal('hide');
+      listado_pedidos();
+      Swal.fire({
+        // position: 'top-end',
+        type: 'success',
+        title: 'El producto se cargo al pedido correctamente',
+        //html: '',
+        showConfirmButton: false,
+        timer: 2000,
+        allowOutsideClick: false,
+        onClose: () => {
+          //Aca hacemos que vaya al carrito.
+          //lnkint('pedido');
+          console.log("Estoy yendo");
+
+        }
+      })
+    }
+  }
+  
 
 }
+function confirmaaddprod2(idprod) {
+  var pedido = [];
+  var cliente = JSON.parse(localStorage.clientes)[localStorage.lectura];
+  if (localStorage.pedido) {
+    pedido = JSON.parse(localStorage.pedido);
+  } else {
+    var data = JSON.parse(localStorage.clientes);
+    pedido.nose = 'NI idea';
+    pedido.id_cliente = data[localStorage.lectura].id;
+    pedido.nombre_cliente = data[localStorage.lectura].nombre + ' ' + data[localStorage.lectura].apellido;
+  }
+  var valido = true;
+
+  // buscar si en pedido no existe ya uno con ese id de producto y sumarle la cantidad
+  var esta = false;
+  for (let i = 0; i < pedido.length; i++) {
+    if (pedido[i].id === idprod) {
+        pedido[i].cantidad++;
+        esta=true;
+        break;
+    }
+  }
+  if(!esta){
+    var data_prods = [];
+    if (localStorage.productos != undefined) {
+      data_prods = JSON.parse(localStorage.productos)
+    }
+
+    var cantidad = data_prods.length;
+    var stock = 1;
+    for (var i = 0; i < cantidad; i++) {
+
+      if (data_prods[i].id == idprod) {
+        var detalle = data_prods[i].presentacion;
+        var descripcion = data_prods[i].titulo;
+        var img = data_prods[i].foto;
+        var codigo = data_prods[i].codigo;
+        var precio = data_prods[i].precio1;
+        if(cliente.lista_precio==2) precio = data_prods[i].precio2;
+        if(cliente.lista_precio==3) precio = data_prods[i].precio3;
+        var titulo = data_prods[i].titulo;
+        stock = data_prods[i].stock;
+        if (img == 'undefined' || img == undefined) {
+          img = 'sin-imagen.png';
+        }
+      }
+    }
+
+    var cantEnPedido = 0;
+    for (var i = 0; i < pedido.length; i++) {
+
+      if (pedido[i].id == idprod) {
+        cantEnPedido = cantEnPedido + parseFloat(pedido[i].cantidad);
+      }
+    }
+
+    if(precio==undefined || precio.trim()=='' || precio=='undefined'){
+      Swal.fire({
+        // position: 'top-end',
+        type: 'info',
+        title: 'Precio para esta lista de cliente no disponible',
+        //html: '',
+        showConfirmButton: true
+      })
+      valido = false;
+      $('#producto_pop').modal('hide');
+      return
+    }else{
+       var maximoAAgregarAlPedido = parseFloat(stock) - parseFloat(cantEnPedido);
+      if (maximoAAgregarAlPedido > 0) {
+        pedido.push({
+          id: idprod,
+          codigo: codigo,
+          cantidad: 1,
+          foto: img,
+          titulo: titulo,
+          detalle: detalle,
+          preciou: precio,
+          subtotal: precio,
+          descripcion: descripcion
+        });
+      }else {
+          Swal.fire({
+            // position: 'top-end',
+            type: 'info',
+            title: 'No tiene mas de este producto en stock',
+            //html: '',
+            showConfirmButton: false,
+            timer: 2000,
+            allowOutsideClick: false,
+            onClose: () => {
+              //
+            }
+          })
+        }
+      
+
+   
+    }
+  }
+  if(valido){
+    if (localStorage.pedido = JSON.stringify(pedido)) {
+      $('#producto_pop').modal('hide');
+      listado_pedidos();
+      Swal.fire({
+        // position: 'top-end',
+        type: 'success',
+        title: 'El producto se cargo al pedido correctamente',
+        //html: '',
+        showConfirmButton: false,
+        timer: 2000,
+        allowOutsideClick: false,
+        onClose: () => {
+          //Aca hacemos que vaya al carrito.
+          //lnkint('pedido');
+          console.log("Estoy yendo");
+
+        }
+      })
+    }
+  }
+}
+  
+
 
 //------------------------------------------------//
 
@@ -282,50 +438,64 @@ function cambiapreciopros() {
 function envia_pedido() {
   console.log('entra');
   //Aca tengo que ver si es solo contado o no.
-  var modal = '';
-
-  modal = '<div class="modal fade bottom" id="modalenvia" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="true" aria-hidden="true">' +
-    '    <div class="modal-dialog modal-full-height modal-bottom modal-notify modal-danger" role="document">' +
-    '      <div class="modal-content">' +
-    '        <div class="modal-body" style="font-size: 18px;">' +
-    '              <h4 style="text-align:center">Se esta por enviar el pedido!</h4><div class="forms compose-list">' +
-    '                  <div id="cobra-total" class="group clearfix bounceIn animated" style="margin-bottom: 5px;margin-top: 20px;font-weight: bold;font-size: x-large;">' +
-    '                    <center>Por un Total de $' + $("#total_final").html() + ' </center>' +
-    '                  </div>' +
-    '                  <div id="opciones" class="group clearfix bounceIn animated" style="margin-bottom: 5px;margin-top: 20px;font-weight: bold;font-size: x-large;">' +
-    '                    <select id="fp" class="form-control" onchange="habilitobtn()">' +
-    '                      <option selected disabled value="">Seleccione una Forma de Pago</option>';
-  let disabled = "disabled";
-  if (JSON.parse(localStorage.clientes)[localStorage.lectura].financiacion.estado != "false") {
-    modal += '                      <option value="1">CTA.CTE.</option>'
-    disabled = "";
-  }
-
-  modal += '            </select>' +
-    '                  </div>' +
-    '                  <div id="opciones_monto" class="group clearfix bounceIn animated hide" style="margin-bottom: 5px;margin-top: 20px;font-weight: bold;font-size: x-large;">' +
-    '                    <label for="motoabona" style="font-size: 18px;text-align: center;width: 100%;">Ingrese el monto a cancelar' +
-    '                      <input ' + disabled + ' onchange="habilitobtn()" type="number" value="' + $("#total_final").html() + '" step="any" id="motoabona" class="form-control">' +
-    '                    </label>' +
-    '                  </div>' +
-    '              </div>' +
-    '          </div>' +
-    '        <div class="modal-footer" style="text-align:center">' +
-    '          <a type="button" disabled class="btn btn-success waves-effect waves-light" href="javascript:void(0)" onclick="envia_pedido_ok()" min="1" id="confpago"  style="background:#4cae4c">Confirmar' +
-    '            <i class="far fa-gem ml-1"></i>' +
-    '          </a>' +
-    '          <a type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Cancelar</a>' +
-    '        </div>' +
-    '      </div>' +
-    '    </div>' +
-    '  </div>' +
-    '</div>';
-
-  $('modal').html(modal);
-  $('#modalenvia').modal('show');
-
-
-
+  var cliente = JSON.parse(localStorage.clientes)[localStorage.lectura];
+  var saldo=0;
+  $.ajax({
+    type: "POST",
+    url: url_gral,
+    data: 'consul_cc_clientes&u=' + localStorage.id + '&c=' + cliente.id,
+    dataType: 'json',
+    crossDomain: true,
+    cache: false,
+    success: function(data2) {
+      saldo = data2.saldo;
+      saldo = Number(saldo.replace('.',''))
+      var total =Number($("#total_final").html());
+      if (Number(cliente.financiacion.tope)-saldo -total > 0){
+        let mensaje="hola";
+        var modal = '';
+        modal = '<div class="modal fade bottom" id="modalenvia" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="true" aria-hidden="true">' +
+          '    <div class="modal-dialog modal-full-height modal-bottom modal-notify modal-danger" role="document">' +
+          '      <div class="modal-content">' +
+          '        <div class="modal-body" style="font-size: 18px;">' +
+          '              <h4 style="text-align:center">Se esta por enviar el pedido!</h4><div class="forms compose-list">' +
+          '                  <div id="cobra-total" class="group clearfix bounceIn animated" style="margin-bottom: 5px;margin-top: 20px;font-weight: bold;font-size: x-large;">' +
+          '                    <center>Por un Total de $' + $("#total_final").html() + ' </center>' +
+          '                  </div>' +
+          '                  <div id="opciones" class="group clearfix bounceIn animated" style="margin-bottom: 5px;margin-top: 20px;text-align:center">' +
+          '                     <p>A Cuenta Corriente</p>'+
+          '                  </div>' +
+          '                  <div id="opciones_monto" class="group clearfix bounceIn animated hide" style="margin-bottom: 5px;margin-top: 20px;font-weight: bold;font-size: x-large;">' +
+          '                    <label for="motoabona" style="font-size: 18px;text-align: center;width: 100%;">Ingrese el monto a cancelar' +
+          '                      <input onchange="habilitobtn()" type="number" value="' + $("#total_final").html() + '" step="any" id="motoabona" class="form-control">' +
+          '                    </label>' +
+          '                  </div>' +
+          '              </div>' +
+          '          </div>' +
+          '        <div class="modal-footer" style="text-align:center">' +
+          '          <a type="button" class="btn btn-success waves-effect waves-light" onclick="envia_pedido_ok()" min="1" id="confpago"  style="background:#4cae4c">Confirmar y enviar por WhatsApp' +
+          '            <i class="far fa-gem ml-1"></i>' +
+          '          </a>' +
+// {{urlencode(str_replace(["&", "#"], ["%26", "%23"], $message))}}
+          '          <a type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Cancelar</a>' +
+          '        </div>' +
+          '      </div>' +
+          '    </div>' +
+          '  </div>' +
+          '</div>';
+      
+        $('modal').html(modal);
+        $('#modalenvia').modal('show');
+      }else{
+        Swal.fire({
+          type: 'error',
+          title: 'No puede avanzar con esta compra porque supera su tope de financiación',
+          showConfirmButton: true
+        })
+      }
+      
+    }
+  })
 }
 
 function habilitobtn() {
@@ -405,7 +575,8 @@ function confirma_pago() {
     var cliente = datas[localStorage.lectura].id;
     var total = $('#monto_modal_pagos').val().replace(".", "");
     var detalle = $('#detalle_modal_pagos').val();
-    var string = 'a=pago&u=' + localStorage.id + '&c=' + cliente + '&d=' + detalle + '&t=' + total;
+    var opcion = $('#opcion_modal_pagos').val()
+    var string = 'a=pago&u=' + localStorage.id + '&c=' + cliente + '&d=' + detalle + '&t=' + total+ '&o=' + opcion;
     $.ajax({
       type: "POST",
       url: url_gral,
@@ -456,7 +627,6 @@ function envia_pedido_ok() {
   if (localStorage.pedido) {
     var total = $("#total_final").html();
     var datas = JSON.parse(localStorage.clientes);
-    var cliente = datas[localStorage.lectura].id;
     var detalle = "";
     var fp = $('#fp option:selected').val();
     var ma = $('#motoabona').val();
@@ -500,15 +670,31 @@ function envia_pedido_ok() {
                   showConfirmButton: false,
                   timer: 3000,
                   allowOutsideClick: false,
-                  onClose: () => {}
+                  onClose: () => {
+                    var cliente_wsp = datas[localStorage.lectura].telefono;
+                    var datos_cliente = datas[localStorage.lectura]
+                    console.log(cliente_wsp)
+                    let mensaje="*FACTURA* \n Nro de cliente: "+datos_cliente.id+" ("+datos_cliente.razon+") Domicilio: "+datos_cliente.direccion+"\n ITEMS:\n";
+                    let items = JSON.parse(localStorage.pedido)
+                    items.forEach(e => {
+                      mensaje+="- "+e.titulo+" ("+e.cantidad+"Un) $"+e.subtotal+"\n";
+
+                    });
+                    mensaje+="*TOTAL:* $"+total;
+                    mensaje = encodeURIComponent(mensaje.replace(/&/g, '%26').replace(/#/g, '%23'));
+                    let url_wsp='https://wa.me/'+ cliente_wsp +'?text='+mensaje;
+                    var win = window.open(url_wsp, '_blank');
+                    win.focus()
+                    $('#modalenvia').modal('hide');
+                    localStorage.lectura = '';
+                    localStorage.removeItem('pedido');
+                    $('.cliente_select').hide();
+                    $('#botonera_cliente').hide();
+                    lnkint('welcome');
+                    chequeo_lectura();
+                  }
                 })
-                $('#modalenvia').modal('hide');
-                localStorage.lectura = '';
-                localStorage.removeItem('pedido');
-                $('.cliente_select').hide();
-                $('#botonera_cliente').hide();
-                lnkint('welcome');
-                chequeo_lectura();
+                
               } else {
                 alert("No inserto!" + data)
               }
@@ -1244,7 +1430,7 @@ function listado_pedidos() {
       if (data[i].stock != '0' && data[i].stock != '00') {
         esqueleto += 'id="producto_' + i + '"  '; //onclick="add_producto(' + data[i].id + ')"
       }
-      esqueleto += ' style="background-color: #0a1050;display:flex;border-radius: 5px;margin-bottom: 10px;margin-left: 15px;margin-right: 15px;width:inherit'; //height: 40px
+      esqueleto += ' style="color: #0a1050; border: 1px solid #0a1050;display:flex;border-radius: 5px;margin-bottom: 10px;margin-left: 15px;margin-right: 15px;width:inherit'; //height: 40px
       if (data[i] == '0' || data[i].stock == '00') {
         esqueleto += ' opacity: 0.4;';
         data[i].stock = '00';
@@ -1267,34 +1453,10 @@ function listado_pedidos() {
         '<div class="col-xs-1" style="display:flex;top: -20px;"  onclick="eliminarProductoEn(' + i + ')"><i class="fa fa-trash" style="float: right;margin-right: -60px; text-align: right;margin-top: 23px"></i></div>' +
         '</div>'
 
-      /**/
-
-
-      /*
-
-              acumula = parseFloat(acumula) + parseFloat(data[i].subtotal);
-              if(data[i].foto!='undefined'){var foto=data[i].foto;}else{var foto='sin-imagen.png';}
-            esqueleto +='<div class="col-xs-12" ';
-            if(data[i].stock!='0' && data[i].stock!='00'){esqueleto +=' onmouseup="muestro_tacho('+i+')" ';}
-            esqueleto +=' style="background-color: #0a1050;height: 40px;border-radius: 5px;margin-bottom: 10px;';
-            if(data[i].stock=='0' || data[i].stock=='00'){esqueleto +=' opacity: 0.4;';data[i].stock='00';}
-          esqueleto +='">'
-                    +'<div class="col-xs-2" style="margin-left: -15px;padding-left: 0px;">'
-                    +'	<div class="my-list" style="overflow: hidden;height: 40px;width: 40px;background-color: white;color: brown;text-align: center;border-radius: 10%;padding-top: 1px;">'
-                    +'		<img style="width:100%;border-radius: 25%;" onerror="this.src=\'img/prod/sin-imagen.png\'" src="img/prod/'+foto+'" alt="'+data[i].detalle+'" />'
-                  //+'		<h4>'+data.productos[i].codigo+'</h4>'
-                    +'	</div>'
-                    +'</div>'
-                    +'<div class="col-xs-10" style="padding-top: 1%;font-size: small;margin-left: -20px;width: 100%;">'
-                    + data[i].descripcion +' ('+data[i].detalle+') X '+data[i].cantidad+' U. <span style="float: right;margin-right: -60px; text-align: right;margin-top: 12px;">$'+data[i].subtotal +'</span><span id="botones_'+i+'" class="hide" onclick="delitem('+i+')" style="float: right;margin-left: -47px;color: #4c031a;font-size: x-large;background-color: white;padding: 5px;border-radius: 5px;margin-top: -6px;z-index: 999;margin-right: -55px;"><i class="fa fa-trash" aria-hidden="true"></i></span>'
-                    +'</div>'
-                    +'</div>'
-                    ;
-                    */
 
       esqueleto += '</div>';
     }
-    esqueleto += ' <div class="col-xs-12" style="background-color: #0a1050;border-radius: 5px;margin-bottom: 10px;font-size: smaller;font-weight: 600;text-align: center;">' +
+    esqueleto += ' <div class="col-xs-12" style="color: #0a1050; border: 1px solid #0a1050; border-radius: 5px;margin-bottom: 10px;font-size: smaller;font-weight: 600;text-align: center;">' +
       '		Total: $<span id="total_final">' + acumula + '</span>' +
       '	</div>'
 
@@ -1371,11 +1533,10 @@ function productoscate() {
           } else {
             var foto = 'sin-imagen.png';
           }
-          esqueleto += '<div class="col-xs-12"';
+          esqueleto += '<div class="col-xs-6 product-single" data-id="'+data.productos[i].id+'"';
           if (data.productos[i].stock != '0' && data.productos[i].stock != '00') {
-            esqueleto += ' onclick="add_producto(' + data.productos[i].id + ')" ';
           }
-          esqueleto += ' style="background-color: #0a1050;display:flex;border-radius: 5px;margin-bottom: 10px;'; //height: 40px
+          esqueleto += ' style="display:flex;border-radius: 5px;margin-bottom: 10px;'; //height: 40px
           if (data.productos[i].stock == '0' || data.productos[i].stock == '00') {
             esqueleto += ' opacity: 0.4;';
             data.productos[i].stock = '00';
@@ -1385,34 +1546,53 @@ function productoscate() {
             stock = '0' + stock;
           }
           esqueleto += '">' +
-            '<div class="col-xs-2" style="display:flex;margin-left: -15px;padding-left: 0px;">' +
-            '	<div class="my-list" style="margin: auto;overflow: hidden;height: 40px;width: 40px;background-color: white;color: brown;text-align: center;border-radius: 10%;padding-top: 1px;">' +
+            //'<div class="col-xs-6" style="margin-left:-15px;padding-left: 0px;width:100%;display:block">' +
+            '	<div class="thumbnail">' +
             '		<img style="width:100%;border-radius: 25%;" onerror="this.src=\'img/prod/sin-imagen.png\'" src="img/prod/' + foto + '" alt="' + data.productos[i].detalle + '" />'
-            //+'		<h4>'+data.productos[i].codigo+'</h4>'
             +
-            '	</div>' +
+            ' <div class="caption">'+
+            '   <p class="nombre_producto">'+ data.productos[i].titulo + ' (' + data.productos[i].presentacion + ')' +'</p>'+
+            '   <p><span class="contador-productos" style="margin: auto;">' + stock + '</span></p>' +
+            ' </div>'+
             '</div>' +
-            '<div class="col-xs-9" style="padding-top: 1%;font-size: small;margin-left: -20px;width: 100%;">' +
-            data.productos[i].titulo + ' (' + data.productos[i].presentacion + ')' +
-            '</div>' +
-            '<div class="col-xs-1" style="display:flex;right: 10px;">' //top: 10px;
-            +
-            '<span class="contador-productos" style="margin: auto;">' + stock + '</span>' +
-            '</div>' +
+            
             '</div>';
-
-          /*
-
-          */
         }
-        esqueleto += '<center style="padding-top: 15px;"><button class="btn" onclick="lnkint(\'productos\')" style="background-color:#2196f3;"><i class="ion-ios-arrow-back"></i> Regresar</button></center>' +
+        esqueleto += '</div><center style="padding-top: 15px;"><button class="btn" onclick="lnkint(\'pedido\')" style="background-color:#2196f3;"><i class="ion-ios-arrow-back"></i> Regresar</button></center>' +
           '  </div>' +
           '</div>';
         $('#listado_productos').html(esqueleto);
 
-        $('#listado_productos').html(esqueleto);
-        //} else {alert('error al recuperar categorias');}
+        var temporizador;
+        var divs = document.querySelectorAll('.product-single');
+
+        divs.forEach(function(div) {
+          div.addEventListener('mousedown', function() {
+            temporizador = setTimeout(function() {
+              var id_producto = div.getAttribute('data-id');
+              add_producto(id_producto);
+            }, 1000); 
+          });
+          
+          div.addEventListener('mouseup', function() {
+            clearTimeout(temporizador); 
+            //alert('agregar una unidad')
+            var id_producto = div.getAttribute('data-id');
+            confirmaaddprod2(id_producto)
+          });
+
+          div.addEventListener('click', function(event) {
+            event.stopPropagation();
+          });
+
+        });
+        
+      }else{
+        alert('Error: No hay productos en stock.')
       }
+    },
+    error:function(data){
+      console.log(data.responseText)
     }
   })
   chequeo_lectura();
@@ -1426,15 +1606,18 @@ function productoslist(m) {
   console.log(m);
   var data = JSON.parse(localStorage.productos);
   var cantidad = data.length;
-
+  var cliente = JSON.parse(localStorage.clientes)[localStorage.lectura];
 
   var esqueleto = '<div class="container">' +
     '<div class="row">';
   for (var i = 0; i < cantidad; i++) {
     var categoria = data[i].marca_id;
+    var precio = data[i].precio1;
+    if(cliente.lista_precio==2) precio = data[i].precio2;
+    if(cliente.lista_precio==3) precio = data[i].precio3;
     if (categoria.toString().toLowerCase().indexOf(m.toString().toLowerCase()) >= 0) {
       esqueleto += '<div class="col-xs-4" style="margin-bottom: 25px;">' +
-        '	<div class="my-list" onclick="abremodal(this)" data-id="' + data[i].id + '" data-img="' + data[i].foto + '" data-codigo="' + data[i].codigo + '" data-precio="' + data[i].precio + '" data-marca="' + data[i].marca_logo + '" data-detalle="' + data[i].detalle + '" style="height: 64px;background-color: white;color: brown;text-align: center;border-radius: 10%;padding-top: 1px;">' +
+        '	<div class="my-list" onclick="abremodal(this)" data-id="' + data[i].id + '" data-img="' + data[i].foto + '" data-codigo="' + data[i].codigo + '" data-precio="' + precio + '" data-marca="' + data[i].marca_logo + '" data-detalle="' + data[i].detalle + '" style="height: 64px;background-color: white;color: brown;text-align: center;border-radius: 10%;padding-top: 1px;">' +
         '		<img style="width:100%;border-radius: 10%;" onerror="this.src=\'img/prod/sin-imagen.png\'" src="img/prod/' + data[i].foto + '" alt="' + data[i].codigo + '" />'
         //+'		<h4>'+data.productos[i].codigo+'</h4>'
         +
@@ -1821,7 +2004,7 @@ function buscaprod() {
 function clienteslist(prod, busca) {
   console.log('Entra con producto: ' + prod);
   var dataString = 'clientes&u=' + localStorage.id + '&b=' + busca;
-
+  
   $.ajax({
     type: "POST",
     url: url_gral,
@@ -1830,6 +2013,7 @@ function clienteslist(prod, busca) {
     crossDomain: true,
     cache: false,
     success: function(data) {
+      console.log(data)
       if (data.estado == 'true') {
         console.log('entra al true');
         localStorage.clientes = JSON.stringify(data.clientes);
@@ -1848,7 +2032,7 @@ function clienteslist(prod, busca) {
               cache: false,
               success: function(data2) {
                 saldo = data2.saldo;
-                esqueleto += '<a href="javascript:void(0)" onclick="lectura(' + index + ');';
+                esqueleto += '<a href="javascript:void(0)" onclick="lectura(' + index + ',\'' + saldo + '\');';
                 if (prod != '0') {
                   esqueleto += ' add_producto(' + prod + '); ';
                 }
@@ -1872,6 +2056,9 @@ function clienteslist(prod, busca) {
       } else {
         alert('error al recuperar');
       }
+    },
+    error:function(data){
+      console.log(data.responseText)
     }
   });
 }
@@ -2233,16 +2420,27 @@ function load_clientes_order() {
 
 
 
-function lectura(id) {
-  //debugger;
+function lectura(id,saldo=99999999) {
+  saldo=saldo.replace('.',"")
+  saldo=Number(saldo)
   localStorage.lectura = id;
   if (id == "0") {
     $(".fa-money").hide();
   } else {
     $(".fa-money").show();
   }
-  localStorage.marcador = 'pedido';
-  lnkint('pedido');
+  var cliente = JSON.parse(localStorage.clientes)[localStorage.lectura];
+  if(cliente.financiacion && cliente.financiacion.tope && cliente.financiacion.tope<saldo){
+    Swal.fire({
+      type: 'warning',
+      title: 'Tope financiación superado, no puede hacer más compras',
+      showConfirmButton: false
+    })
+  }else{
+    localStorage.marcador = 'pedido';
+    lnkint('pedido');
+  }
+
 }
 
 /////////////////////////////////////////////////
@@ -2689,11 +2887,11 @@ function modal_pago(obj) {
     '              <span style="text-align:center;font-weight: bold;">Monto a Abonar:</span></br>' +
     '              <input type="number" id="monto_modal_pagos" name="quant[1]" onchange="cambiapreciopros();" min="500" max="" style="height: 45px;text-align: center;font-weight: bold;font-size: xx-large;" class="form-control input-number" value="">' +
     '              </br></br><span style="text-align:center;font-weight: bold;">Opciones de pago:</span></br>' +
-    '              <select id="opcion_modal_pagos" class="form-control">'+
-    '               <option>Contado</option' +
-    '               <option>Transferencia</option' +
-    '               <option>Cheque</option' +
-    '               <option>Mercado Pago</option' +
+    '              </br><select id="opcion_modal_pagos" class="form-control mb-3">'+
+    '               </br><option value="2">Contado</option>' +
+    '               </br><option value="3">Transferencia</option>' +
+    '               </br><option value="4">Cheque</option>' +
+    '               </br><option value="5">Mercado Pago</option>' +
     '              </select>' +
     '              </br></br><span style="text-align:center;font-weight: bold;">Observaciones:</span></br>' +
     '              <textarea placeholder="ingrese una observacion" id="detalle_modal_pagos" class="form-control"></textarea>' +

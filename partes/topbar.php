@@ -112,7 +112,7 @@ $hasta = date("Y-m-d", strtotime('next Sunday '));
             </button>
             <div class="dropdown-menu">
               <li><a href="index.php?pagina=proveedores" class="dropdown-item">Listado de Proveedores</a></li>
-              <li><a href="index.php?pagina=proveedores_add" class="dropdown-item">Nuevo Proveedor</a></li>             
+              <li><a href="index.php?pagina=proveedores_add" class="dropdown-item">Nuevo Proveedor</a></li>         
             </div>
           </div>
         <?php } ?>

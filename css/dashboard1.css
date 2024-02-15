@@ -47,3 +47,32 @@ margin-left: 10px;
   text-align: left;
   padding: 20px;
   background: url(../img/gradiant-bg.png) top center repeat-x; }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    background-color: #ccc;
+    border-radius: 17px;
+  }
+  
+.switch::before {
+content: "";
+position: absolute;
+width: 26px;
+height: 26px;
+border-radius: 50%;
+background-color: white;
+top: 4px;
+left: 4px;
+transition: 0.3s;
+}
+
+.switch.on {
+background-color: #2196F3;
+}
+
+.switch.on::before {
+transform: translateX(26px);
+}

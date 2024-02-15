@@ -115,6 +115,7 @@ if ($_SESSION['usuario'] != '') {
     $financia = $_POST['financia'];
     if($financia=='' || $financia=='null'){$financia='0';}
     $limite= $_POST['limite'];
+    $listap= $_POST['listap'];
 
 
     // inicio geoencode
@@ -165,7 +166,8 @@ if ($_SESSION['usuario'] != '') {
     foto_clientes='$upload',
     estado_clientes='1',
     quien_clientes='$quien',
-    cuando_clientes='$cuando' ";
+    cuando_clientes='$cuando',
+    lista_precio='$listap'";
     $inserta = $link->query($inserto_cliente);
     $id_clie_ulti = mysqli_insert_id($link);
   //  $inserta = $link->query("insert INTO clientes_comercios set situacion_comclientes='activo', cliente_comclientes='$id_clie_ulti', estado_comclientes='1',	quien_comclientes='$quien',	cuando_comclientes='$cuando'");
@@ -610,6 +612,28 @@ if ($_SESSION['usuario'] != '') {
 
     if ($inserta) {
       echo $id_clie_ulti . '@' . $apellido . ', ' . $nombre . '@' . $provincia . '@' . $ciudad . '@' . $direccion . '@' . $numero;
+    } else {
+      echo 'FALSE';
+    }
+  }
+
+  //************ Cambiar estado cliente **************//
+  if (isset($_POST['accion']) && $_POST['accion'] == 'desactiva_cliente') {
+    $id = $_POST['id'];
+
+    $update = $link->query("UPDATE clientes SET estado_clientes='2' where id_clientes ='$id' ");
+    if ($update) {
+      echo 'TRUE';
+    } else {
+      echo 'FALSE';
+    }
+  }
+  if (isset($_POST['accion']) && $_POST['accion'] == 'activa_cliente') {
+    $id = $_POST['id'];
+
+    $update = $link->query("UPDATE clientes SET estado_clientes='1' where id_clientes ='$id' ");
+    if ($update) {
+      echo 'TRUE';
     } else {
       echo 'FALSE';
     }

@@ -49,6 +49,7 @@
                   <th>E-mail</th>
                   <th>Estado </th>
                   <th>Acciones&nbsp;&nbsp;&nbsp;</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -94,6 +95,13 @@
                         <?php if ($_SESSION['tipo'] != 'User' && $row['id_clientes'] != '1') { ?> &nbsp;&nbsp;<a class="btn-pure btn-outline-info edit-row-btn btn-lg" style="padding:0px;" href="index.php?pagina=clientes_edit&id=<?php echo $row['id_clientes'] ?>" data-toggle="tooltip" data-original-title="Editar"><i class="ti-pencil" aria-hidden="true"></i></a>
                           &nbsp;&nbsp;<a class="btn-pure btn-outline-danger delete-row-btn btn-lg" style="padding:0px;" href="#" data-toggle="modal" data-target="#del_<?php echo $row['id_clientes'] ?>" data-original-title="Borrar"><i class="ti-close" aria-hidden="true"></i></a>
                         <?php } ?> </td>
+                      <td class="font-weight-normal">
+                        <?php if($row['estado_clientes'] =='1'){ ?>
+                          <button class="switch on" onclick="desactivarCliente(<?=$row['id_clientes']?>)"></button>
+                        <?php }else{ ?>
+                          <button class="switch" onclick="activarCliente(<?=$row['id_clientes']?>)"></button>
+                        <?php } ?>
+                      </td>
                   </tr>
                 <?php echo '
                                             <div class="modal fade" id="del_' . $row['id_clientes'] . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -121,7 +129,7 @@
                 <tr>
 
 
-                  <td colspan="6">
+                  <td colspan="7">
                     <div class="text-right">
                       <ul class="pagination">
                         <li class="footable-page-arrow disabled"><a data-page="first" href="#first">«</a></li>
