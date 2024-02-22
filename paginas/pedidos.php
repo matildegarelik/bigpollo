@@ -1,4 +1,4 @@
-<?php if ($_GET['add'] == '1') {
+<?php if (isset($_GET['add']) && $_GET['add'] == '1') {
   include('clientes_add.php');
 } else { ?><div class="container-fluid">
 
@@ -28,14 +28,14 @@
                 <h4 class="card-title">Listado</h4>
               </div>
               <div class="col-md-2"><small class="form-control-feedback"> Desde </small>
-                <input class="form-control filtro" type="date" id="d" name="d" value="<?php if ($_GET['d']) {
+                <input class="form-control filtro" type="date" id="d" name="d" value="<?php if (isset($_GET['d'])) {
                                                                                         echo $_GET['d'];
                                                                                       } else {
                                                                                         echo date('Y-m-01');
                                                                                       } ?>">
               </div>
               <div class="col-md-2"><small class="form-control-feedback"> Hasta </small>
-                <input class="form-control filtro" type="date" id="h" name="h" value="<?php if ($_GET['h']) {
+                <input class="form-control filtro" type="date" id="h" name="h" value="<?php if (isset($_GET['h'])) {
                                                                                         echo $_GET['h'];
                                                                                       } else {
                                                                                         echo date('Y-m-d');
@@ -62,7 +62,7 @@
                 <a href="#" onclick="filtrar_vende()" class="btn btn-info btn-lg" role="button">Filtrar</a>
               </div>
               <div class="col-md-2" style="align-self: center;">
-                <?php if ($_GET['d'] || $_GET['h']) { ?><a href="index.php?pagina=pedidos">Quitar Filtros</a><?php } ?>
+                <?php if (isset($_GET['d']) || isset($_GET['h'])) { ?><a href="index.php?pagina=pedidos">Quitar Filtros</a><?php } ?>
                 <div id="total_periodo">Total $</div>
               </div>
 
@@ -87,17 +87,17 @@
                 </thead>
                 <tbody>
                   <?php
-                  if ($_GET['d']) {
+                  if (isset($_GET['d'])) {
                     $desde = $_GET['d'];
                   } else {
                     $desde = date('Y-m-01');
                   }
-                  if ($_GET['h']) {
+                  if (isset($_GET['h'])) {
                     $hasta = $_GET['h'];
                   } else {
                     $hasta = date('Y-m-d 23:59:59');
                   }
-                  if ($_GET['v']) {
+                  if (isset($_GET['v'])) {
                     $vendedor = ' and personal.id = ' . $_GET['v'];
                   } else {
                     $vendedor = '';

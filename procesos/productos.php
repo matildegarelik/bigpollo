@@ -47,16 +47,13 @@ function utf8ize($mixed)
 	return $mixed;
 }
 
-if ($_POST['a'] == 'add') {
+if (isset($_POST['a']) && $_POST['a'] == 'add') {
 	$codigo = $_POST['codigo'];
 	$nombre = $_POST['nombre'];
 	$modelo = $_POST['modelo'];
 	$presentacion = $_POST['presentacion'];
 	$descripcion = $_POST['descripcion'];
-	$fabricante = $_POST['fabricante'];
-	if ($fabricante == '') {
-		$fabricante = '0';
-	}
+	$fabricante = '0';
 	$proveedor = $_POST['proveedor'];
 	if ($proveedor == '') {
 		$proveedor = '0';
@@ -68,7 +65,10 @@ if ($_POST['a'] == 'add') {
 	$estado = $_POST['estado'];
 	$costo = $_POST['costo'];
 	$utilidad = $_POST['utilidad'];
-	$pventa = $_POST['pventa'];
+
+	$pventa1 = $_POST['pventa1'];
+	$pventa2 = $_POST['pventa2'];
+	$pventa3 = $_POST['pventa3'];
 	$stock = $_POST['stock'];
 	if ($stock == '') {
 		$stock = '0';
@@ -77,12 +77,13 @@ if ($_POST['a'] == 'add') {
 	$img = $_POST['img'];
 
 
-	$insert_prod = "INSERT INTO productos SET codigo_producto='$codigo',	detalle_producto='$nombre',	precio_producto='$pventa',	categoria_producto='$categoria',
-			marca_producto='$fabricante',	proveedor_producto='$proveedor', modelo_producto='$modelo',	presentacion_producto='$presentacion',	descripcion_producto='$descripcion',	costo_producto='$costo',	utilidad_producto='$utilidad',	foto_producto='$img',	estado_producto='$estado',	quien_producto='$quien',	cuando_producto='$cuando',	stock_producto='$stock',	stockmin_producto='$stockmin' ";
+	$insert_prod = "INSERT INTO productos SET codigo_producto='$codigo',	detalle_producto='$nombre',	precio_producto='$pventa1'	,	precio_producto2='$pventa2',	precio_producto3='$pventa3',
+			categoria_producto='$categoria', marca_producto='$fabricante',	proveedor_producto='$proveedor', modelo_producto='$modelo',	
+			presentacion_producto='$presentacion',	descripcion_producto='$descripcion',	costo_producto='$costo',	
+			utilidad_producto='$utilidad',	foto_producto='$img',	estado_producto='$estado',	quien_producto='$quien',	
+			cuando_producto='$cuando',	stock_producto='$stock',	stockmin_producto='$stockmin' ";
 	$add = $link->query($insert_prod);
 	$ultimo_id = mysqli_insert_id($link);
-
-
 	if ($add) {
 		echo 'TRUE';
 	} else {
@@ -90,7 +91,7 @@ if ($_POST['a'] == 'add') {
 	}
 }
 
-if ($_POST['a'] == 'actualiza') {
+if (isset($_POST['a']) && $_POST['a'] == 'actualiza') {
 	$codigo = $_POST['codigo'];
 	$nombre = $_POST['nombre'];
 	$modelo = $_POST['modelo'];
@@ -100,10 +101,8 @@ if ($_POST['a'] == 'actualiza') {
 	if ($fabricante == '') {
 		$fabricante = '0';
 	}
-	$proveedor = $_POST['proveedor'];
-	if ($proveedor == '') {
-		$proveedor = '0';
-	}
+	$proveedor = '0';
+	
 	$categoria = $_POST['categoria'];
 	if ($categoria == '') {
 		$categoria = '0';
@@ -111,7 +110,9 @@ if ($_POST['a'] == 'actualiza') {
 	$estado = $_POST['estado'];
 	$costo = $_POST['costo'];
 	$utilidad = $_POST['utilidad'];
-	$pventa = $_POST['pventa'];
+	$pventa1 = $_POST['pventa1'];
+	$pventa2 = $_POST['pventa2'];
+	$pventa3 = $_POST['pventa3'];
 	$stock = $_POST['stock'];
 	if ($stock == '') {
 		$stock = '0';
@@ -119,7 +120,7 @@ if ($_POST['a'] == 'actualiza') {
 	$stockmin = $_POST['stockmin'];
 	$img = $_POST['img'];
 	$id = $_POST['id'];
-	$updatea = "UPDATE productos SET codigo_producto='$codigo',	detalle_producto='$nombre',	precio_producto='$pventa',	categoria_producto='$categoria',
+	$updatea = "UPDATE productos SET codigo_producto='$codigo',	detalle_producto='$nombre',	precio_producto='$pventa1',	precio_producto2='$pventa2',	precio_producto3='$pventa3',	categoria_producto='$categoria',
 			marca_producto='$fabricante', proveedor_producto='$fabricante',	modelo_producto='$modelo',	presentacion_producto='$presentacion',	descripcion_producto='$descripcion',	costo_producto='$costo',	utilidad_producto='$utilidad',	foto_producto='$img',	estado_producto='$estado',	quien_producto='$quien',	cuando_producto='$cuando',	stock_producto='$stock', stockmin_producto='$stockmin' WHERE id_producto='$id' ";
 	$upg = $link->query($updatea);
 
@@ -131,7 +132,7 @@ if ($_POST['a'] == 'actualiza') {
 }
 
 
-if ($_POST['a'] == 'updateprecio') {
+if (isset($_POST['a']) && $_POST['a'] == 'updateprecio') {
 	$res = 'FALSE';
 	$prod = $_POST['id'];
 	$precio = $_POST['pre'];
@@ -143,7 +144,7 @@ if ($_POST['a'] == 'updateprecio') {
 	echo $res;
 }
 
-if ($_POST['accion'] == 'catelist') {
+if (isset($_POST['accion']) && $_POST['accion'] == 'catelist') {
 	$consul_cate = $link->query("SELECT id_categoria as id, titulo_categoria as nombre  FROM categorias WHERE estado_categoria = 1 ORDER BY titulo_categoria ASC ") or die(mysqli_error());
 	echo '<option value="" disabled selected>Seleccione una Categoria </option>';
 	while ($row = mysqli_fetch_array($consul_cate)) {
@@ -151,7 +152,7 @@ if ($_POST['accion'] == 'catelist') {
 	}
 }
 
-if ($_POST['accion'] == 'fabrilist') {
+if (isset($_POST['accion']) && $_POST['accion'] == 'fabrilist') {
 	echo '<option value="" disabled selected>Seleccione un Fabricante </option>';
 	$consul_fab = $link->query("SELECT id_marca as id, titulo_marca as nombre FROM marcas WHERE estado_marca = 1 ORDER BY titulo_marca ASC ") or die(mysqli_error());
 	while ($row = mysqli_fetch_array($consul_fab)) {
@@ -159,7 +160,7 @@ if ($_POST['accion'] == 'fabrilist') {
 	}
 }
 
-if ($_POST['accion'] == 'provlist') {
+if (isset($_POST['accion']) && $_POST['accion'] == 'provlist') {
 	echo '<option value="" disabled selected>Seleccione un Proveedor </option>';
 	$consul_prov = $link->query("SELECT id_proveedor as id, razon_com_proveedor as nombre FROM proveedores WHERE estado_proveedor = 1 ORDER BY razon_com_proveedor ASC ") or die(mysqli_error());
 	while ($row = mysqli_fetch_array($consul_prov)) {
@@ -168,7 +169,7 @@ if ($_POST['accion'] == 'provlist') {
 }
 
 
-if ($_POST['accion'] == 'product_list') {
+if (isset($_POST['accion']) && $_POST['accion'] == 'product_list') {
 	if ($_POST['prov'] != '') {
 		$id_prov = $_POST['prov'];
 		$prov = " and proveedor_producto='$id_prov' ";
@@ -184,7 +185,7 @@ if ($_POST['accion'] == 'product_list') {
 
 
 
-if ($_POST['accion'] == 'datosprod') {
+if (isset($_POST['accion']) && $_POST['accion'] == 'datosprod') {
 
 	$prod = $_POST['id'];
 	$consul_prod = $link->query("SELECT * FROM productos WHERE id_producto ='$prod' ") or die(mysqli_error());
@@ -203,8 +204,11 @@ if ($_POST['accion'] == 'datosprod') {
 		$data['data']['estado'] = trim($row['estado_producto']);
 		$data['data']['costo'] = trim($row['costo_producto']);
 		$data['data']['utilidad'] = trim($row['utilidad_producto']);
-		$data['data']['precioventa'] = trim($row['precio_producto']);
+		$data['data']['precio1'] = trim($row['precio_producto']);
+		$data['data']['precio2'] = trim($row['precio_producto2']);
+		$data['data']['precio3'] = trim($row['precio_producto3']);
 		$data['data']['stock'] = trim($row['stock_producto']);
+		$data['data']['stock_min'] = trim($row['stockmin_producto']);
 		$data['data']['foto'] = trim($row['foto_producto']);
 	}
 	$arreglo =  safe_json_encode($data);
@@ -216,7 +220,7 @@ if ($_POST['accion'] == 'datosprod') {
 } //cierra accion datosprod
 
 
-if ($_POST['a'] == 'delp') {
+if (isset($_POST['a']) && $_POST['a'] == 'delp') {
 	//echo 'entra ok';
 	$id = $_POST['id'];
 	$delsql = $link->query("UPDATE productos SET estado_producto='0' WHERE id_producto = '$id' ") or die(mysqli_error());

@@ -1,4 +1,4 @@
-<?php if ($_GET['add'] == '1') {
+<?php if (isset($_GET['add']) && $_GET['add'] == '1') {
   include('clientes_add.php');
 } else { ?><div class="container-fluid">
 
@@ -105,7 +105,7 @@
                 <h4 class="card-title">Listado</h4>
               </div>
               <div class="col-md-2"><small class="form-control-feedback"> Desde </small>
-                <input class="form-control filtro" type="date" id="d" name="d" value="<?php if ($_GET['d']) {
+                <input class="form-control filtro" type="date" id="d" name="d" value="<?php if (isset($_GET['d'])) {
                                                                                         echo $_GET['d'];
                                                                                       } else {
                                                                                         echo date('Y-m-01');
@@ -114,7 +114,7 @@
 
               </div>
               <div class="col-md-2"><small class="form-control-feedback"> Hasta </small>
-                <input class="form-control filtro" type="date" id="h" name="h" value="<?php if ($_GET['h']) {
+                <input class="form-control filtro" type="date" id="h" name="h" value="<?php if (isset($_GET['h'])) {
                                                                                         echo $_GET['h'];
                                                                                       } else {
                                                                                         echo date('Y-m-d');
@@ -122,7 +122,7 @@
 
 
               </div>
-              <div class="col-md-3" style="align-self: center;"><?php if ($_GET['d'] || $_GET['h']) { ?><a href="index.php?pagina=estadocamion">Quitar Filtros</a><?php } ?></div>
+              <div class="col-md-3" style="align-self: center;"><?php if (isset($_GET['d']) || isset($_GET['h'])) { ?><a href="index.php?pagina=estadocamion">Quitar Filtros</a><?php } ?></div>
               <!-- <div id="total_periodo">Total $</div> -->
             </div>
             <h6 class="card-subtitle"></h6>
@@ -147,12 +147,12 @@
                 </thead>
                 <tbody>
                   <?php
-                  if ($_GET['d']) {
+                  if (isset($_GET['d'])) {
                     $desde = $_GET['d'];
                   } else {
                     $desde = date('Y-m-01');
                   }
-                  if ($_GET['h']) {
+                  if (isset($_GET['h'])) {
                     $hasta = $_GET['h'];
                   } else {
                     $hasta = date('Y-m-d 23:59:59');
@@ -209,10 +209,10 @@
                     $carga = 0;
                     $venta = 0;
                     while ($calculo = mysqli_fetch_array($buscastock)) {
-                      if ($calculo['tipomov_stockd'] == 'carga') {
+                      if (isset($calculo['tipomov_stockd']) && $calculo['tipomov_stockd'] == 'carga') {
                         $carga = $carga + $calculo['cantidad_stockd'];
                       }
-                      if ($calculo['tipomov_stockd'] == 'venta'  || $calculod['tipomov_stockd'] == 'devolucion') {
+                      if (isset($calculo['tipomov_stockd']) && ($calculo['tipomov_stockd'] == 'venta'  || $calculo['tipomov_stockd'] == 'devolucion')) {
                         $venta = $venta + $calculo['cantidad_stockd'];
                       }
                     }
@@ -235,14 +235,13 @@
                       <td class="font-weight-normal"><?php echo $stock_final; ?></td> <!-- devoluciones -->
                       <td class="font-weight-normal"><?php echo '$ ' . number_format($acumula_cobros, 2, ',', '.') ?> <span data-container="body" title="Detalle de Movimientos" data-toggle="popover" data-placement="top" data-html="true" data-content='<?php echo $movimientos; ?>'><i class="fa fa-th-list"></i></span></td>
                       <td class="font-weight-normal"><?php echo '$ ' . number_format($acumula_gastos, 2, ',', '.') ?> <span data-container="body" title="Detalle de Gastos" data-toggle="popover" data-placement="top" data-html="true" data-content='<?php echo $gastos; ?>'><i class="fa fa-th-list"></i></span></td>
-                      <td class="font-weight-normal"><?php if ($row['entrega_liquidacion'] == null) {
+                      <td class="font-weight-normal"><?php if (!isset($row['entrega_liquidacion']) && $row['entrega_liquidacion'] == null) {
                                                         echo '-';
                                                       } else {
                                                         echo '$ ' . number_format($row['entrega_liquidacion'], 2, ',', '.');
                                                       } ?></td>
                       <td class="font-weight-normal"><?php
-
-                                                      if ($row['entrega_liquidacion'] != null && $diferencia == '0') {
+                                                      if (isset($row['entrega_liquidacion']) && $row['entrega_liquidacion'] != null && $diferencia == '0') {
                                                         if (date('Y-m-d') == date('Y-m-d', strtotime($row['fecha_cargac']))) {
                                                           $acumula_liquidacion = $acumula_liquidacion + $row['entrega_liquidacion'];
                                                           $acumula_liqui++;
@@ -266,8 +265,14 @@
                                                       ?></td>
                       <td class="font-weight-normal">
                         <?php
-                        if ($row['entrega_liquidacion'] == null) {
-                          echo '<a class="btn-pure btn-outline-success success-row-btn btn-lg" style="padding:0px;" href="#" data-toggle="modal" data-target="#liquida_' . $row['id_cargac'] . '" data-toggle="tooltip" data-original-title="Cerrar Jornada"><i class="fa fa-money" aria-hidden="true"></i></a>';
+                        if (!isset($row['entrega_liquidacion']) && $row['entrega_liquidacion'] == null) {
+                          if($row['autoriza_cargac']>'0001-00-00') {
+                            echo '<a class="btn-pure btn-warning"><i class="fa fa-truck" aria-hidden="true"></i></a>';
+                            echo '<a class="btn-pure btn-outline-success success-row-btn btn-lg" style="padding-left:8px;" href="#" data-toggle="modal" data-target="#liquida_plata_' . $row['id_cargac'] . '" data-toggle="tooltip" data-original-title="Cerrar Jornada"><i class="fa fa-money" aria-hidden="true"></i></a>';
+                            
+                          }else{
+                            echo '<a class="btn-pure btn-outline-success success-row-btn btn-lg" style="padding:0px;" href="#" data-toggle="modal" data-target="#liquida_' . $row['id_cargac'] . '" data-toggle="tooltip" data-original-title="Cerrar Jornada"><i class="fa fa-truck" aria-hidden="true"></i></a>';
+                          }
                           
                         } else {
                           echo '<a class="btn-pure btn-outline-success success-row-btn btn-lg" style="padding:0px;" target="_blank" href="paginas/liqui_pdf.php?p=' . date('Y-m-d', strtotime($row['fecha_cargac'])) . '&u=' . $personal . '" ><i class="fa fa-clipboard" aria-hidden="true"></i></a> <a class="btn-pure btn-outline-info info-row-btn btn-lg" style="padding:0px;" target="_blank" href="paginas/liqui_detalle_pdf.php?p=' . date('Y-m-d', strtotime($row['fecha_cargac'])) . '&u=' . $personal . '" ><i class="fa fa-file-text" aria-hidden="true"></i></a>';
@@ -301,6 +306,7 @@
                                             </div>';
 
                     if ($row['entrega_liquidacion'] == null) {
+                      // STOCK
                       $modal_liqui = '
                                                   <div class="modal fade" id="liquida_' . $row['id_cargac'] . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog modal-lg" role="document">
@@ -311,19 +317,8 @@
                                                           </button>
                                                         </div>
                                                         <div class="modal-body">
-                                                          <h4 ><center>Esta por realizar el cierre de la Jornada de la carga # "' . $row['id_cargac'] . '" (' . $row['fecha_cargac'] . ') de ' . $row['apellido'] . ', ' . $row['nombre'] . '</center></h4><br>
-                                                          <div class="row"><div class="col-md-6">
-                                                          + Recaudacion: $' . $acumula_cobros . '<br>
-                                                          - Gastos&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: $' . $acumula_gastos . '<br>
-                                                          --------------------------------<br>
-                                                          A rendir&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: $' . ($acumula_cobros - $acumula_gastos) . '
-                                                          </div>
-                                                          <div class="col-md-6">El vendedor rinde un total de  $ <input type="number" id="total_rendido_' . $row['id_cargac'] . '" step="any" class="form-control" value="' . ($acumula_cobros - $acumula_gastos) . '"></div></div>
-                                                          <input type="hidden" value="' . ($acumula_cobros - $acumula_gastos) . '" id="tot_a_cobrar_' . $row['id_cargac'] . '">
-                                                          <input type="hidden" value="' . $personal . '" id="personal_' . $row['id_cargac'] . '">
-                                                          <input type="hidden" value="' . $row['fecha_cargac'] . '" id="fecha_' . $row['id_cargac'] . '">
-                                                          <hr/>
-                                                          <p>Ademas se realiza de devolucion al stock general de:</p>
+                                                          <h4 ><center>Esta por realizar el cierre de la jornada de stock de la carga # "' . $row['id_cargac'] . '" (' . $row['fecha_cargac'] . ') de ' . $row['apellido'] . ', ' . $row['nombre'] . '</center></h4><br>
+                                                         
                                                           <div class="row">
                                                             <div class="col-md-9"><b>Poducto</b></div>
                                                             <div class="col-md-3"><b>Cantidad</b></div>
@@ -385,12 +380,48 @@
                                                         </div>
                                                         <div class="modal-footer">
                                                           <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                                                          <button onclick="liquidacion(' . $row['id_cargac'] . ')" class="btn btn-primary">Si, Confirmar</button>
+                                                          <button onclick="liquidacion_stock(' . $row['id_cargac'] . ')" class="btn btn-primary">Si, Confirmar</button>
                                                         </div>
                                                       </div>
                                                     </div>
                                                   </div>';
                       echo $modal_liqui;
+
+                      // Rendición plata
+                      $modal_liqui_plata='
+                        <div class="modal fade" id="liquida_plata_' . $row['id_cargac'] . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                <h4 ><center>Esta por realizar el cierre de la jornada de stock de la carga # "' . $row['id_cargac'] . '" (' . $row['fecha_cargac'] . ') de ' . $row['apellido'] . ', ' . $row['nombre'] . '</center></h4><br>
+                                
+                                <div class="row">
+                                  <div class="col-md-6">
+                                    + Recaudacion: $' . $acumula_cobros . '<br>
+                                    - Gastos&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: $' . $acumula_gastos . '<br>
+                                    --------------------------------<br>
+                                    A rendir&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: $' . ($acumula_cobros - $acumula_gastos) . '
+                                  </div>
+                                  <div class="col-md-6">El vendedor rinde un total de  $ <input type="number" id="total_rendido_' . $row['id_cargac'] . '" step="any" class="form-control" value="' . ($acumula_cobros - $acumula_gastos) . '"></div>
+                                </div>
+                                <input type="hidden" value="' . ($acumula_cobros - $acumula_gastos) . '" id="tot_a_cobrar_' . $row['id_cargac'] . '">
+                                <input type="hidden" value="' . $personal . '" id="personal_' . $row['id_cargac'] . '">
+                                <input type="hidden" value="' . $row['fecha_cargac'] . '" id="fecha_' . $row['id_cargac'] . '">
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                <button onclick="liquidacion_plata(' . $row['id_cargac'] . ')" class="btn btn-primary">Si, Confirmar</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div><hr/>';
+                        echo $modal_liqui_plata;
+                    
                     }
                   } ?>
                 </tbody>

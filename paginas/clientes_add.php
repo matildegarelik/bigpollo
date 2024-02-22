@@ -126,26 +126,7 @@
               <h3>Datos Adicinales</h3>
               <div class="row">
 
-                <!--<div class="col-md-3 m-b-20">
-                  <label class="radio-inline m-r-20">
-                    <input style="margin-left:0px;" class="sexoh" type="radio" value="H" name="sexo" required="">&nbsp; Hombre
-                  </label>
-                  <label class="radio-inline">
-                    <input class="sexom" style="margin-left:0px;" type="radio" value="M" name="sexo">&nbsp; Mujer
-                  </label>
-                </div>
-
-                <div class="col-md-3 m-b-20">
-                  <label for="ecivil">Estado Civil</label>
-                  <select class="form-control ecivil" id="ecivil" name="ecivil">
-                    <option value="" disabled="" selected="">Seleccione uno</option>
-                    <option value="Soltero/a">Soltero/a</option>
-                    <option value="Casado/a">Casado/a</option>
-                    <option value="Concubinato">Concubinato</option>
-                    <option value="Divorciado/a">Divorciado/a</option>
-                    <option value="Viudo/a">Viudo/a</option>
-                  </select>
-                </div>-->
+              
                 <div class="col-md-3 m-b-20">
                   <label for="cumple">Fecha de Cumpleaños</label>
                   <input type="date" placeholder="Cumpleaños" class="form-control cumple" id="cumple" name="cumple" required="">
@@ -174,7 +155,7 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6 m-b-20">
+                <div class="col-md-4 m-b-20">
                   <label for="financia">Habilitado Financiacion</label>
                   <select class="form-control financia" id="financia" name="financia">
                     <option value="" disabled="" selected="">Seleccione</option>
@@ -182,9 +163,17 @@
                     <option value="0">NO</option>
                   </select>
                 </div>
-                <div class="col-md-6 m-b-20">
-                  <label for="ecivil">Tope de Financiacion</label>
+                <div class="col-md-4 m-b-20">
+                  <label for="limite">Tope de Financiacion</label>
                   <input type="number" step="any" placeholder="Indique el limite" class="form-control limite" id="limitefinancia" name="limitefinancia" required="">
+                </div>
+              
+              <div class="col-md-4 m-b-20">
+                  <label for="financia">Días Financiación</label>
+                  <select class="form-control financia_dias" id="financia_dias" name="financia_dias">
+                    <option>7</option>
+                    <option>14</option>
+                  </select>
                 </div>
               </div>
               <div class="form-group">

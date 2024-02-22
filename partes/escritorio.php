@@ -156,11 +156,154 @@ if (isset($_GET['e']) && $_GET['e'] == 'crcok') {
         </div>
     </div>
 
-    <div class="row">
+    <div class="row align-items-start">
         <!-- Column -->
         <!-- Column -->
         <div class="col-lg-4 col-md-12">
+            <div class="card">
+                <div class="card-header bg-info">
+                    <h4 class="m-b-0 text-white">Nueva Factura de Proveedor</h4>
+                </div>
+                <div class="card-body">
 
+                    <form id="facturaadd" style="width:100%" name="facturaadd" action="procesos/caja.php" method="post">
+                        <div class="row" id="form-factura">
+                            <input name="accion" value="add" type="hidden">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                <label class="control-label">Seleccione Proveedor</label>
+
+                                <select id="provee_factura" class="form-control">
+                                    <option value='' selected disabled>Selecione Proveedor</option>
+                                    <?php
+                                    $con_prov = $link->query("SELECT * FROM proveedores WHERE estado_proveedor = '1' ORDER BY razon_com_proveedor ASC");
+                                    while ($row = mysqli_fetch_array($con_prov)) {
+                                        echo '<option value="' . $row['id_proveedor'] . '">' . utf8_encode($row['razon_com_proveedor']) . ' (' . utf8_encode($row['notas_proveedor']) . ')</option>';
+                                    }
+                                    ?>
+                                </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="nro_factura">Nº Factura</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon2"><i class="fa fa-outdent"></i></span>
+                                        </div>
+                                        <input id="nro_factura" name="nro_factura" placeholder="Ingrese el Nº de factura" class="form-control" type="text">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="comprobante">Ingrese monto</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon2"><i class="fa fa-money"></i></span>
+                                        </div>
+                                        <input id="monto_factura" name="monto_factura" placeholder="Ingrese monto" class="form-control" step="any" type="number">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label class="control-label">Tipo </label>
+                                <select id="tipo_factura" class="form-control">
+                                    <option selected>Selecione Tipo </option>
+                                    <?php
+                                    $con_tipocomp = $link->query("SELECT * FROM `tipo_comprobantes` WHERE `estado_comprobantes` = 1 ORDER BY `tipo_comprobantes`.`nombre_comprobantes` ASC");
+                                    while ($row = mysqli_fetch_array($con_tipocomp)) {
+                                        echo '<option value="' . $row['id_comprobantes'] . '">' . $row['nombre_comprobantes'] . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <textarea id="detalle_factura" name="detalle_factura" rows="4" placeholder="Ingrese el detalle de la misma" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button class="btn btn-success" type="button" onclick="add_factura()">Guardar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header bg-info">
+                    <h4 class="m-b-0 text-white">Cargar Pago a Proveedor</h4>
+                </div>
+                <div class="card-body">
+
+                    <form id="pagofacturaadd" style="width:100%" name="pagofacturaadd" method="post">
+                        <div class="row" id="form-pago">
+                            <input name="accion" value="add" type="hidden">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                <label class="control-label">Seleccione Proveedor</label>
+
+                                <select id="provee_pago" class="form-control" onchange="cambiafacturasprove()">
+                                    <option value='' selected disabled>Selecione Proveedor</option>
+                                    <?php
+                                    $con_prov = $link->query("SELECT * FROM proveedores WHERE estado_proveedor = '1' ORDER BY razon_com_proveedor ASC");
+                                    while ($row = mysqli_fetch_array($con_prov)) {
+                                        echo '<option value="' . $row['id_proveedor'] . '">' . utf8_encode($row['razon_com_proveedor']) . ' (' . utf8_encode($row['notas_proveedor']) . ')</option>';
+                                    }
+                                    ?>
+                                </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="nro_factura">Nº Factura</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon2"><i class="fa fa-outdent"></i></span>
+                                        </div>
+                                        <select id="nro_factura_pago" class="form-control" required>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="comprobante">Ingrese monto</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon2"><i class="fa fa-money"></i></span>
+                                        </div>
+                                        <input id="monto_factura_pago" name="monto" placeholder="Ingrese monto" class="form-control" step="any" type="number">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <textarea id="detalle_factura_pago" name="detalle" rows="4" placeholder="Ingrese el detalle del mismo" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button class="btn btn-success" type="button" onclick="add_factura_pago()">Guardar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            
+            </div>
+        </div>
+        <div class="col-lg-6">
             <div class="card">
                 <div class="card-header bg-info">
                     <h4 class="m-b-0 text-white"> Caja Diaria</h4>
@@ -217,8 +360,6 @@ if (isset($_GET['e']) && $_GET['e'] == 'crcok') {
                     </form>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-6">
             <div class="card ">
                 <div class="card-header bg-info">
                     <h4 class="m-b-0 text-white"> Ingreso de Comprobantes</h4>
@@ -383,6 +524,7 @@ if (isset($_GET['e']) && $_GET['e'] == 'crcok') {
 
             </div>
         </div>
+        
     </div>
   
 </div>

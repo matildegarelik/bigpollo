@@ -88,7 +88,13 @@ $output_img    =  ob_get_clean();
               <input placeholder="Utilidad" type="number" id="utilidad" class="form-control utilidad">
             </div>
             <div class="col-md-4 m-b-20">
-              <input placeholder="Precio de Venta" step="any" type="number" id="pventa" class="form-control pventa">
+              <input placeholder="Precio de Venta" step="any" type="number" id="pventa1" class="form-control pventa">
+            </div>
+            <div class="col-md-4 m-b-20">
+              <input placeholder="Precio de Venta 2" type="number" id="pventa2" class="form-control pventa">
+            </div>
+            <div class="col-md-4 m-b-20">
+              <input placeholder="Precio de Venta 3" type="number" id="pventa3" class="form-control pventa">
             </div>
             <div class="col-md-4 m-b-20">
               <input placeholder="Stock Inicial" type="number" id="stock" class="form-control stock">
@@ -149,23 +155,27 @@ $output_img    =  ob_get_clean();
     var estado = $('#estado').val();
     var costo = $('#costo').val();
     var utilidad = $('#utilidad').val();
-    var pventa = $('#pventa').val();
+    var pventa1 = $('#pventa1').val();
+    var pventa2 = $('#pventa2').val();
+    var pventa3 = $('#pventa3').val();
     var stock = $('#stock').val();
     var stockmin = $('#stockmin').val();
 
     var url = "procesos/productos.php?";
-    var string = 'a=actualiza&id=' + id + '&codigo=' + codigo + '&nombre=' + nombre + '&modelo=' + modelo + '&presentacion=' + presentacion + '&descripcion=' + descripcion + '&fabricante=' + fabricante + '&categoria=' + categoria + '&estado=' + estado + '&costo=' + costo + '&utilidad=' + utilidad + '&pventa=' + pventa + '&stock=' + stock + '&stockmin=' + stockmin;
-    console.log(string);
+    var string = 'a=actualiza&id=' + id + '&codigo=' + codigo + '&nombre=' + nombre + '&modelo=' + modelo + '&presentacion=' + presentacion + 
+      '&descripcion=' + descripcion + '&fabricante=' + fabricante + '&categoria=' + categoria + '&estado=' + estado + '&costo=' + costo + '&img=' +
+      '&utilidad=' + utilidad + '&pventa1=' + pventa1 + '&pventa2=' + pventa2 + '&pventa3=' + pventa3 + '&stock=' + stock + '&stockmin=' + stockmin;
     $.ajax({
       type: "POST",
       url: url,
       data: string,
       success: function(data) {
+
         if (data == 'TRUE') {
           window.location.href = 'index.php?pagina=productos';
 
         } else {
-          //console.log(data);
+          console.log(data);
         }
       }
     })
@@ -182,6 +192,7 @@ $output_img    =  ob_get_clean();
       data: string,
       success: function(data) {
         if (data != 'FALSE') {
+          console.log(data.data)
           console.log('Inserta: ' + data.data.foto)
           $("#codigo").val(data.data.codigo)
           $("#nombre").val(data.data.nombre)
@@ -193,8 +204,11 @@ $output_img    =  ob_get_clean();
           $("#estado").val(data.data.estado)
           $("#costo").val(data.data.costo)
           $("#utilidad").val(data.data.utilidad)
-          $("#pventa").val(data.data.precioventa)
+          $("#pventa1").val(data.data.precio1)
+          $("#pventa2").val(data.data.precio2)
+          $("#pventa3").val(data.data.precio3)
           $("#stock").val(data.data.stock)
+          $("#stockmin").val(data.data.stock_min)
           if (data.data.foto != '' && data.data.foto != 'undefined') {
             $('#imgprod').attr('src', '/prod/' + data.data.foto);
           } else {

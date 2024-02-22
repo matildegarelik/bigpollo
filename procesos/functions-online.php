@@ -1184,6 +1184,71 @@ if (isset($_POST['productos'])) {
   $productos = $link->query("SELECT * FROM productos LEFT JOIN categorias on categorias.id_categoria = productos.categoria_producto LEFT JOIN marcas on marcas.id_marca = productos.marca_producto WHERE productos.estado_producto='1' $categoria $marca $busca $filtro") or die(mysqli_error());
   $p = '0';
   if (mysqli_num_rows($productos) > 0) {
+    if($usuario!=2){
+      while ($row = mysqli_fetch_array($productos)) {
+        $prod_id = $row['id_producto'];
+        $buscastock = $link->query("SELECT * FROM stock_depositos WHERE idpersona_stockd='$usuario' and idproducto_stockd='$prod_id' and fecha_stockd like '$hoy%' and estado_stockd='1' ") or die(mysqli_error());
+        $carga = 0;
+        $venta = 0;
+        $stock_final = 0;
+        while ($calculo = mysqli_fetch_array($buscastock)) {
+          if ($calculo['tipomov_stockd'] == 'carga') {
+            $carga = $carga + $calculo['cantidad_stockd'];
+          }
+          if ($calculo['tipomov_stockd'] == 'venta' || $calculo['tipomov_stockd'] == 'devolucion') {
+            $venta = $venta + $calculo['cantidad_stockd'];
+          }
+        }
+        $stock_final = $carga - $venta;
+        //
+        if ($stock_final > 0) {
+          if ($stock_final < 10) {
+            $stock_final = '0' . $stock_final;
+          }
+          $data['estado'] = 'true';
+          $data['fecha'] = $hoy;
+          $data['productos'][$p]['id'] = $row['id_producto'];
+          $data['productos'][$p]['codigo'] = trim($row['codigo_producto']);
+          $data['productos'][$p]['titulo'] = trim($row['detalle_producto']);
+          $data['productos'][$p]['descripcion'] = trim($row['descripcion_producto']);
+          $data['productos'][$p]['precio1'] = trim($row['precio_producto']);
+          $data['productos'][$p]['precio2'] = trim($row['precio_producto2']);
+          $data['productos'][$p]['precio3'] = trim($row['precio_producto3']);
+          $data['productos'][$p]['categoria_id'] = trim($row['categoria_producto']);
+          $data['productos'][$p]['categoria'] = trim($row['titulo_categoria']);
+          $data['productos'][$p]['marca_id'] = trim($row['marca_producto']);
+          $data['productos'][$p]['marca'] = trim($row['titulo_marca']);
+          $data['productos'][$p]['presentacion'] = trim($row['presentacion_producto']);
+          $data['productos'][$p]['marca_logo'] = trim($row['logo_marca']);
+          $data['productos'][$p]['foto'] = trim($row['foto_producto']);
+          $data['productos'][$p]['stock'] = trim($stock_final);
+          $p++;
+        }
+      }
+    }else{
+      while ($row = mysqli_fetch_array($productos)) {
+        $prod_id = $row['id_producto'];
+        
+          $data['estado'] = 'true';
+          $data['fecha'] = $hoy;
+          $data['productos'][$p]['id'] = $row['id_producto'];
+          $data['productos'][$p]['codigo'] = trim($row['codigo_producto']);
+          $data['productos'][$p]['titulo'] = trim($row['detalle_producto']);
+          $data['productos'][$p]['descripcion'] = trim($row['descripcion_producto']);
+          $data['productos'][$p]['precio1'] = trim($row['precio_producto']);
+          $data['productos'][$p]['precio2'] = trim($row['precio_producto2']);
+          $data['productos'][$p]['precio3'] = trim($row['precio_producto3']);
+          $data['productos'][$p]['categoria_id'] = trim($row['categoria_producto']);
+          $data['productos'][$p]['categoria'] = trim($row['titulo_categoria']);
+          $data['productos'][$p]['marca_id'] = trim($row['marca_producto']);
+          $data['productos'][$p]['marca'] = trim($row['titulo_marca']);
+          $data['productos'][$p]['presentacion'] = trim($row['presentacion_producto']);
+          $data['productos'][$p]['marca_logo'] = trim($row['logo_marca']);
+          $data['productos'][$p]['foto'] = trim($row['foto_producto']);
+          $p++;
+        }
+      
+    }
     while ($row = mysqli_fetch_array($productos)) {
       $prod_id = $row['id_producto'];
       $buscastock = $link->query("SELECT * FROM stock_depositos WHERE idpersona_stockd='$usuario' and idproducto_stockd='$prod_id' and fecha_stockd like '$hoy%' and estado_stockd='1' ") or die(mysqli_error());

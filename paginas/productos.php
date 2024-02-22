@@ -8,7 +8,7 @@
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">Inicio</a></li>
         <li class="breadcrumb-item"><a href="index.php?pagina=productos">Productos</a></li>
-        <?php if ($_GET['buscar']) {
+        <?php if (isset($_GET['buscar'])) {
           echo '<li class="breadcrumb-item"><a href="#">Buscar: [' . $_GET['buscar'] . ']</a></li>';
         } ?>
       </ol>
@@ -25,7 +25,7 @@
     <div class="col-12">
       <div class="card">
         <div class="card-body">
-          <?php if ($_GET['buscar']) {
+          <?php if (isset($_GET['buscar'])) {
             echo '<h4 class="card-title">Resulados de [' . $_GET['buscar'] . ']...</h4>';
           } else {
             echo '<h4 class="card-title">Listado</h4>';
@@ -51,7 +51,7 @@
               <tbody>
                 <?php
                 $busqueda = '';
-                if ($_GET['buscar']) {
+                if (isset($_GET['buscar'])) {
                   $palabra = $_GET['buscar'];
                   $busqueda = "and (descripcion_producto like '%$palabra%' or presentacion_producto like '%$palabra%' or detalle_producto like '%$palabra%' or modelo_producto like '%$palabra%' )";
                 }

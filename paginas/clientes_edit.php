@@ -215,49 +215,10 @@ $prov = $row['provincia_id'];
         <h3>Datos Adicinales</h3>
         <div class="row">
 
-          <div class="col-md-3 m-b-20">
-
-            <label class="radio-inline m-r-20">
-
-              <input style="margin-left:0px;" class="sexoh_editf" type="radio" value="H" <?php if ($row['sexo_clientes'] == 'H') {
-                                                                                            echo 'checked';
-                                                                                          } ?> name="sexo_editf" required="">&nbsp; Hombre
-
-            </label>
-
-            <label class="radio-inline">
-
-              <input class="sexom_editf" style="margin-left:0px;" type="radio" value="M" <?php if ($row['sexo_clientes'] == 'M') {
-                                                                                            echo 'checked';
-                                                                                          } ?> name="sexo_editf">&nbsp; Mujer
-
-            </label>
-
-          </div>
-          <div class="col-md-3 m-b-20">
-            <label for="ecivil">Estado Civil</label>
-            <select class="form-control ecivil_editf" id="ecivil_editf" name="ecivil_editf">
-              <option value="" disabled="" selected="">Seleccione uno</option>
-              <option value="Soltero/a" <?php if ($row['estadocivil_clientes'] == 'Soltero/a') {
-                                          echo ' selected';
-                                        } ?>>Soltero/a</option>
-              <option value="Casado/a" <?php if ($row['estadocivil_clientes'] == 'Casado/a') {
-                                          echo ' selected';
-                                        } ?>>Casado/a</option>
-              <option value="Concubinato" <?php if ($row['estadocivil_clientes'] == 'Concubinato') {
-                                            echo ' selected';
-                                          } ?>>Concubinato</option>
-              <option value="Divorciado/a" <?php if ($row['estadocivil_clientes'] == 'Divorciado/a') {
-                                              echo ' selected';
-                                            } ?>>Divorciado/a</option>
-              <option value="Viudo/a" <?php if ($row['estadocivil_clientes'] == 'Viudo/a') {
-                                        echo ' selected';
-                                      } ?>>Viudo/a</option>
-            </select>
-          </div>
+          
           <div class="col-md-3 m-b-20">
             <label for="cumple">Fecha de Cumpleaños</label>
-            <input type="date" placeholder="Cumpleaños" class="form-control cumple_editf" id="cumple_editf" value="<?php echo $row['fechacumple_clientes']; ?>" name="cumple_editf" required="">
+            <input type="date" placeholder="Cumpleaños" class="form-control cumple_editf" id="cumple_editf" value="<?php echo date('Y-m-d', strtotime($row['fechacumple_clientes'])); ?>" name="cumple_editf" required="">
 
           </div>
           <div class="col-md-3 m-b-20">
@@ -276,9 +237,24 @@ $prov = $row['provincia_id'];
               ?>
             </select>
           </div>
+          <div class="col-md-3 m-b-20">
+            <label for="ecivil">Lista de precios</label>
+            <select class="form-control listap" id="listap_editf" name="listap">
+              <option value="" disabled="" selected="">Seleccione uno</option>
+              <option value="1" <?php if ($row['lista_precio'] == '1') {
+                                  echo 'selected';
+                                } ?>>Lista 1</option>
+              <option value="2" <?php if ($row['lista_precio'] == '2') {
+                                  echo 'selected';
+                                } ?>>Lista 2</option>
+              <option value="3" <?php if ($row['lista_precio'] == '3') {
+                                  echo 'selected';
+                                } ?>>Lista 3</option>
+            </select>
+          </div>
         </div>
         <div class="row">
-          <div class="col-md-6 m-b-20">
+          <div class="col-md-4 m-b-20">
             <label for="financia">Habilitado Financiacion</label>
             <select class="form-control financiacion_editf" id="financia_editf" name="financia_editf">
               <option value="" disabled="" selected="">Seleccione</option>
@@ -290,10 +266,21 @@ $prov = $row['provincia_id'];
                                 } ?>>NO</option>
             </select>
           </div>
-          <div class="col-md-6 m-b-20">
+          <div class="col-md-4 m-b-20">
             <label for="ecivil">Tope de Financiacion</label>
             <input type="number" step="any" placeholder="Indique el limite" class="form-control " value="<?php echo $row['topefinancia_com_clientes'] ?>" id="limitefinancia_editf" name="limitefinancia_editf" required="">
           </div>
+        <div class="col-md-4 m-b-20">
+                <label for="financia">Días Financiación</label>
+                <select class="form-control financia_dias" id="financia_dias_editf" name="financia_dias">
+                  <option <?php if ($row['dias_financiacion'] == '7') {
+                                  echo 'selected';
+                                } ?>>7</option>
+                  <option <?php if ($row['dias_financiacion'] == '14') {
+                                  echo 'selected';
+                                } ?>>14</option>
+                </select>
+              </div>
         </div>
         <div class="form-group">
           <div class="col-md-12 m-b-20">

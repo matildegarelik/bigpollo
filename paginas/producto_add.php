@@ -75,7 +75,13 @@
               <input placeholder="Utilidad" type="number" id="utilidad" onchange="calculaventa()" class="form-control utilidad">
             </div>
             <div class="col-md-4 m-b-20">
-              <input placeholder="Precio de Venta" type="number" id="pventa" class="form-control pventa">
+              <input placeholder="Precio de Venta 1" type="number" id="pventa1" class="form-control pventa">
+            </div>
+            <div class="col-md-4 m-b-20">
+              <input placeholder="Precio de Venta 2" type="number" id="pventa2" class="form-control pventa">
+            </div>
+            <div class="col-md-4 m-b-20">
+              <input placeholder="Precio de Venta 3" type="number" id="pventa3" class="form-control pventa">
             </div>
             <div class="col-md-4 m-b-20">
               <input placeholder="Stock Inicial" type="number" id="stock" class="form-control stock">
@@ -119,7 +125,7 @@
 
   function calculaventa() {
     if ($('#costo').val() != '' && $('#utilidad').val() != '') {
-      $('#pventa').val(parseFloat($('#costo').val()) + (parseFloat($('#costo').val()) * parseFloat($('#utilidad').val()) / 100));
+      $('#pventa1').val(parseFloat($('#costo').val()) + (parseFloat($('#costo').val()) * parseFloat($('#utilidad').val()) / 100));
     }
   }
 
@@ -134,19 +140,22 @@
     var estado = $('#estado option:selected').val();
     var costo = $('#costo').val();
     var utilidad = $('#utilidad').val();
-    var pventa = $('#pventa').val();
+    var pventa1 = $('#pventa1').val();
+    var pventa2 = $('#pventa2').val();
+    var pventa3 = $('#pventa3').val();
     var stock = $('#stock').val();
     var stockmin = $('#stockmin').val();
     var img = $('#file').val();
 
     $.ajax({
       url: "procesos/productos.php?",
-      data: 'a=add&codigo=' + codigo + '&nombre=' + nombre + '&modelo=' + modelo + '&presentacion=' + presentacion + '&descripcion=' + descripcion + '&proveedor=' + proveedor + '&categoria=' + categoria + '&estado=' + estado + '&costo=' + costo + '&utilidad=' + utilidad + '&pventa=' + pventa + '&stock=' + stock + '&img=' + img + '&stockmin=' + stockmin,
+      data: 'a=add&codigo=' + codigo + '&nombre=' + nombre + '&modelo=' + modelo + '&presentacion=' + presentacion + '&descripcion=' + descripcion + '&proveedor=' + proveedor + '&categoria=' + categoria + '&estado=' + estado + '&costo=' + costo + '&utilidad=' + utilidad + '&pventa1=' + pventa1+ '&pventa2=' + pventa2+ '&pventa3=' + pventa3 + '&stock=' + stock + '&img=' + img + '&stockmin=' + stockmin,
       type: "POST",
       success: function(data) {
         if (data == 'TRUE') {
           window.location.href = 'index.php?pagina=productos';
         } else {
+          console.log(data)
           alert(data);
         }
       }

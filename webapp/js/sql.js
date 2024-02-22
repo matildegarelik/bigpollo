@@ -17,6 +17,24 @@ $(document).ready(function() {
   });
 });
 
+//-------------------------------------------------------------------//
+//Recorre el pedido y te dice cuantos hay en el pedido
+function cantEnPedido(idProducto) {
+  var pedido = [];
+  if (localStorage.pedido != undefined) {
+    pedido = JSON.parse(localStorage.pedido);
+  }
+
+  var cantEnPedido = 0;
+  for (var i = 0; i < pedido.length; i++) {
+    if (pedido[i].id == idProducto) {
+      cantEnPedido = cantEnPedido + parseFloat(pedido[i].cantidad);
+    }
+  }
+
+  return cantEnPedido;
+}
+
 function abrelink(link) {
   window.location.href = link + '.html';
 }
@@ -113,7 +131,8 @@ function add_producto(id) {
       }
 
       var maximoAAgregarAlPedido = parseFloat(stock) - parseFloat(cantEnPedido);
-      if (maximoAAgregarAlPedido > 0) {
+      if(localStorage.id=="2") maximoAAgregarAlPedido=9999;
+      if (maximoAAgregarAlPedido > 0 || localStorage.id=="2") {
 
 
         var modal = '';
@@ -240,6 +259,7 @@ function confirmaaddprod() {
   for (let i = 0; i < pedido.length; i++) {
     if (pedido[i].id === idprod) {
         pedido[i].cantidad += parseInt($('#cant_prodmodal').val());
+        pedido[i].subtotal = pedido[i].cantidad * pedido[i].preciou
         esta=true;
         break;
     }
@@ -249,10 +269,8 @@ function confirmaaddprod() {
     if(precio==undefined || precio.trim()=='' || precio=='undefined'){
       valido=false;
       Swal.fire({
-        // position: 'top-end',
         type: 'info',
         title: 'Precio para esta lista de cliente no disponible',
-        //html: '',
         showConfirmButton: true
       })
       $('#producto_pop').modal('hide');
@@ -285,10 +303,8 @@ function confirmaaddprod() {
         timer: 2000,
         allowOutsideClick: false,
         onClose: () => {
-          //Aca hacemos que vaya al carrito.
-          //lnkint('pedido');
           console.log("Estoy yendo");
-
+          $('#unidad-'+idprod).html(cantEnPedido(idprod)+"un")
         }
       })
     }
@@ -314,6 +330,7 @@ function confirmaaddprod2(idprod) {
   for (let i = 0; i < pedido.length; i++) {
     if (pedido[i].id === idprod) {
         pedido[i].cantidad++;
+        pedido[i].subtotal = pedido[i].cantidad * pedido[i].preciou
         esta=true;
         break;
     }
@@ -344,14 +361,6 @@ function confirmaaddprod2(idprod) {
       }
     }
 
-    var cantEnPedido = 0;
-    for (var i = 0; i < pedido.length; i++) {
-
-      if (pedido[i].id == idprod) {
-        cantEnPedido = cantEnPedido + parseFloat(pedido[i].cantidad);
-      }
-    }
-
     if(precio==undefined || precio.trim()=='' || precio=='undefined'){
       Swal.fire({
         // position: 'top-end',
@@ -365,7 +374,7 @@ function confirmaaddprod2(idprod) {
       return
     }else{
        var maximoAAgregarAlPedido = parseFloat(stock) - parseFloat(cantEnPedido);
-      if (maximoAAgregarAlPedido > 0) {
+      if (maximoAAgregarAlPedido > 0 || localStorage.id=="2") {
         pedido.push({
           id: idprod,
           codigo: codigo,
@@ -409,10 +418,8 @@ function confirmaaddprod2(idprod) {
         timer: 2000,
         allowOutsideClick: false,
         onClose: () => {
-          //Aca hacemos que vaya al carrito.
-          //lnkint('pedido');
-          console.log("Estoy yendo");
-
+          console.log(cantEnPedido(idprod));
+          $('#unidad-'+idprod).html(cantEnPedido(idprod)+"un")
         }
       })
     }
@@ -576,6 +583,7 @@ function confirma_pago() {
     var total = $('#monto_modal_pagos').val().replace(".", "");
     var detalle = $('#detalle_modal_pagos').val();
     var opcion = $('#opcion_modal_pagos').val()
+    var opcion_forma = $('#opcion_modal_pagos').text()
     var string = 'a=pago&u=' + localStorage.id + '&c=' + cliente + '&d=' + detalle + '&t=' + total+ '&o=' + opcion;
     $.ajax({
       type: "POST",
@@ -590,17 +598,32 @@ function confirma_pago() {
             title: 'El pago de ' + datas[localStorage.lectura].nombre + ' ' + datas[localStorage.lectura].apellido + ' fue procesado correctamente',
             //html: '',
             showConfirmButton: false,
-            timer: 3000,
+            timer: 2000,
             allowOutsideClick: false,
-            onClose: () => {}
+            onClose: () => {
+              var cliente_wsp = datas[localStorage.lectura].telefono;
+              var datos_cliente = datas[localStorage.lectura]
+              console.log(datos_cliente)
+              let mensaje="*RECIBÍ $"+total+"* \n Forma de pago: "+opcion_forma+" (Obs.: "+detalle+") \n";
+              var fecha = new Date().toLocaleDateString('es-ES');
+              let saldo =parseFloat($('#saldo_pagos').html().replace('.',''))
+              var saldo_pendiente= saldo - parseFloat(total)
+              mensaje+="*SALDO PENDIENTE: * $"+saldo_pendiente+"\n";
+              mensaje+="FECHA: "+fecha+" \n";           
+              mensaje = encodeURIComponent(mensaje.replace(/&/g, '%26').replace(/#/g, '%23'));
+              let url_wsp='https://wa.me/'+ cliente_wsp +'?text='+mensaje;
+              var win = window.open(url_wsp, '_blank');
+              win.focus()
+              $('#modalpago').modal('hide');
+              localStorage.lectura = '';
+              localStorage.removeItem('pedido');
+              $('.cliente_select').hide();
+              $('#botonera_cliente').hide();
+              lnkint('welcome');
+              chequeo_lectura();
+            }
           })
-          $('#modalpago').modal('hide');
-          localStorage.lectura = '';
-          localStorage.removeItem('pedido');
-          $('.cliente_select').hide();
-          $('#botonera_cliente').hide();
-          lnkint('welcome');
-          chequeo_lectura();
+          
         }
       }
     })
@@ -628,7 +651,7 @@ function envia_pedido_ok() {
     var total = $("#total_final").html();
     var datas = JSON.parse(localStorage.clientes);
     var detalle = "";
-    var fp = $('#fp option:selected').val();
+    var fp = "1";
     var ma = $('#motoabona').val();
     //Nos fijamos que no pase el tope de financiacion
     var datas = JSON.parse(localStorage.clientes);
@@ -673,8 +696,8 @@ function envia_pedido_ok() {
                   onClose: () => {
                     var cliente_wsp = datas[localStorage.lectura].telefono;
                     var datos_cliente = datas[localStorage.lectura]
-                    console.log(cliente_wsp)
-                    let mensaje="*FACTURA* \n Nro de cliente: "+datos_cliente.id+" ("+datos_cliente.razon+") Domicilio: "+datos_cliente.direccion+"\n ITEMS:\n";
+                    console.log(datos_cliente)
+                    let mensaje="*FACTURA* \n Nro de cliente: "+datos_cliente.id+" ("+datos_cliente.razon+") Dirección: "+datos_cliente.direccion+" "+datos_cliente.dirnum+" \n ITEMS:\n";
                     let items = JSON.parse(localStorage.pedido)
                     items.forEach(e => {
                       mensaje+="- "+e.titulo+" ("+e.cantidad+"Un) $"+e.subtotal+"\n";
@@ -1381,7 +1404,7 @@ function consul_billetera() {
 function chequeo_lectura() {
   if (localStorage.lectura != '') {
     var data = JSON.parse(localStorage.clientes);
-    $('.cliente_select').html('<span style="padding-left: 10px;">' + data[localStorage.lectura].razon + '</span><span onclick="cierra_cliente()" class="fa fa-times-circle" style="float: right;padding-right: 10px;"></span>');
+    $('.cliente_select').html('<span style="padding-left: 10px;">' + data[localStorage.lectura].razon + '</span><!--<span onclick="cierra_cliente()" class="fa fa-times-circle" style="float: right;padding-right: 10px;"></span>-->');
     $('.cliente_select').show();
     $('#botonera_cliente').show();
   }
@@ -1523,7 +1546,7 @@ function productoscate() {
         console.log(data);
         
         var cantidad = data.productos.length;
-        esqueleto = '<div class="container">' +
+        esqueleto = '<audio id="miSonido" src="../img/notification-sound-7062.mp3" preload="auto"></audio><div class="container">' +
         //  '<div class="row" style="padding-bottom: 10px;"><input type="search" data-ide="' + id + '" id="search_prod_cat" placeholder="Buscar Producto..." style="width:80%" > <button onclick="filtra_prod()" class="btn btn-success" style="border-radius:0px;padding: 3px 15px 3px 15px">Ok</button></div>'; +
         '<div class="row">';
 
@@ -1552,7 +1575,12 @@ function productoscate() {
             +
             ' <div class="caption">'+
             '   <p class="nombre_producto">'+ data.productos[i].titulo + ' (' + data.productos[i].presentacion + ')' +'</p>'+
-            '   <p><span class="contador-productos" style="margin: auto;">' + stock + '</span></p>' +
+            '   <p>';
+            if(localStorage.id!=2){
+              esqueleto+='<span class="contador-productos" style="margin: auto;">' + stock + '</span> '
+            
+            }
+            esqueleto+='    <span class="unidades" id="unidad-'+data.productos[i].id+'">'+cantEnPedido(data.productos[i].id)+'Un</span></p>' +
             ' </div>'+
             '</div>' +
             
@@ -1565,6 +1593,7 @@ function productoscate() {
 
         var temporizador;
         var divs = document.querySelectorAll('.product-single');
+        var miSonido = document.getElementById('miSonido');
 
         divs.forEach(function(div) {
           div.addEventListener('mousedown', function() {
@@ -1583,6 +1612,7 @@ function productoscate() {
 
           div.addEventListener('click', function(event) {
             event.stopPropagation();
+            miSonido.play()
           });
 
         });
@@ -1705,7 +1735,7 @@ function lnkint(h, v) {
   if (h == 'pedido') {
     $('.pedido').addClass("visible");
     var data = JSON.parse(localStorage.clientes);
-    $('.cliente_select').html('<span style="padding-left: 10px;">' + data[localStorage.lectura].razon +'</span><span onclick="cierra_cliente()" class="fa fa-times-circle" style="float: right;padding-right: 10px;"></span>');
+    $('.cliente_select').html('<span style="padding-left: 10px;">' + data[localStorage.lectura].razon +'</span><!--<span onclick="cierra_cliente()" class="fa fa-times-circle" style="float: right;padding-right: 10px;"></span>-->');
     $('.cliente_select').show();
     $('#botonera_cliente').show();
     listado_pedidos();
@@ -1899,24 +1929,6 @@ function productosdevolucion() {
 }
 
 //-------------------------------------------------------------------//
-//Recorre el pedido y te dice cuantos hay en el pedido
-function cantEnPedido(idProducto) {
-  var pedido = [];
-  if (localStorage.pedido != undefined) {
-    pedido = JSON.parse(localStorage.pedido);
-  }
-
-  var cantEnPedido = 0;
-  for (var i = 0; i < pedido.length; i++) {
-    if (pedido[i].id == idProducto) {
-      cantEnPedido = cantEnPedido + parseFloat(pedido[i].cantidad);
-    }
-  }
-
-  return cantEnPedido;
-}
-
-//-------------------------------------------------------------------//
 function buscaprod() {
   var palabra = $('#search_prod').val();
   var dataString = 'productos&u=' + localStorage.id + '&b=' + palabra;
@@ -2038,14 +2050,14 @@ function clienteslist(prod, busca) {
                 }
                 esqueleto += '">' +
                   '    <div  class="media  heading flipInY animated">' +
-                  '       <div class="price" style="height: 100px;padding-top: 10%">';
+                  '       <div class="price" style="height: 100%;">';
                 if(index < 10) {esqueleto += '0' + index;} else {esqueleto += index;}
                 esqueleto += ' </div>' +
                   '    <div class="media-body pl-3" style="padding-top: 0px;">' +
                   '       <div class="address" style="margin-top: 15px;">' + row.rubro + ' <br/>' + row.razon + '<br/>';
                 if(index != 0) {esqueleto += '<span style="font-size: 12px">Dir: ' + row.direccion + ' ' + row.dirnum + '</span>';}
                 esqueleto += '</div> </div>' +
-                  '   <div class="saldo">SALDO: $ ' + saldo + '</div>' +
+                  '   <div class="saldo">SALDO: $ ' + saldo + ' - TOPE: $ '+ row.financiacion.tope +'</div>' +
                   '   </div>' +
                   '</a>';
                 $('#listado_clientes').html(esqueleto);
@@ -2899,7 +2911,7 @@ function modal_pago(obj) {
     '           </div>' +
     '          </div>' +
     '        <div class="modal-footer" style="text-align:center">' +
-    '          <a type="button" class="btn btn-success waves-effect waves-light" href="javascript:void(0)" id="con-fpago" onclick="confirma_pago()" style="background:#4cae4c">Abonar' +
+    '          <a type="button" class="btn btn-success waves-effect waves-light" href="javascript:void(0)" id="con-fpago" onclick="confirma_pago()" style="background:#4cae4c;margin-bottom:10px">Abonar y enviar por WhatsApp' +
     '            <i class="far fa-gem ml-1"></i>' +
     '          </a>' +
     '          <a type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Cancelar</a>' +

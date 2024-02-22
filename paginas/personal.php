@@ -8,7 +8,7 @@
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">Inicio</a></li>
         <li class="breadcrumb-item"><a href="index.php?pagina=clientes">Personal</a></li>
-        <?php if ($_GET['buscar']) {
+        <?php if (isset($_GET['buscar'])) {
           echo '<li class="breadcrumb-item"><a href="#">Buscar: [' . $_GET['buscar'] . ']</a></li>';
         } ?>
       </ol>
@@ -25,7 +25,7 @@
     <div class="col-12">
       <div class="card">
         <div class="card-body">
-          <?php if ($_GET['buscar']) {
+          <?php if (isset($_GET['buscar'])) {
             echo '<h4 class="card-title">Resulados de [' . $_GET['buscar'] . ']...</h4>';
           } else {
             echo '<h4 class="card-title">Listado</h4>';
@@ -51,7 +51,7 @@
               <tbody>
                 <?php
                 $busqueda = '';
-                if ($_GET['buscar']) {
+                if (isset($_GET['buscar'])) {
                   $palabra = $_GET['buscar'];
                   $busqueda = "and (apellido like '%$palabra%' or nombre like '%$palabra%' or dni like '%$palabra%' )";
                 }
@@ -73,8 +73,12 @@
                     </td>
 
                     <td>
-                      <a href="mailto:<?php echo $row['email'] ?>?subject=Big%20Pollo&body=Hola,<?php echo $row['nombre'] ?>"><?php echo $row['email'] ?>
-                      </a>
+                      <?php if(isset($row['email_per'])){ ?>
+                        <a href="mailto:<?php echo $row['email_per'] ?>?subject=Big%20Pollo&body=Hola,<?php echo $row['nombre'] ?>"><?php echo $row['email_per'] ?>
+                        </a>
+                      <?php } else{ ?>
+                        -
+                      <?php } ?>
                     </td>
                     <td>
                       <a href="tel:<?php if ($row['telefono'] != '') {

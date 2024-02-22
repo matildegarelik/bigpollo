@@ -174,7 +174,12 @@ function dibuja_canasta(){
     var financia = $('#financia').val();
     var limite_financia = $('#limitefinancia').val();
     var listap = $('#listap').val();
-    var string2 = "accion=add_clientes&apellido="+apellido+"&nombre="+nombre+"&tipodni="+tipodni+"&dni="+dni+"&sexo="+sexo+"&ecivil="+ecivil+"&cumple="+cumple+"&email="+email+"&email2="+email2+"&telfijo="+telfijo+"&celular="+celular+"&provincia="+provincia+"&ciudad="+ciudad+"&direccion="+direccion+"&numero="+numero+"&piso="+piso+"&depto="+depto+"&upload="+upload+"&razon="+razon+"&cuit="+cuit+"&condicioniva="+condicioniva+"&rubro="+rubro+"&telfijo_com="+telfijo_com+"&celular_com="+celular_com+"&direccion_com="+direccion_com+"&numero_com="+numero_com+"&piso_com="+piso_com+"&depto_com="+depto_com+"&notas="+notas+"&asignado="+asignado+"&financia="+financia+"&limite="+limite_financia+"&listap="+listap;
+    var dias_financia =$('#financia_dias').val()
+    var string2 = "accion=add_clientes&apellido="+apellido+"&nombre="+nombre+"&tipodni="+tipodni+"&dni="+dni+"&sexo="+sexo+"&ecivil="+ecivil+
+      "&cumple="+cumple+"&email="+email+"&email2="+email2+"&telfijo="+telfijo+"&celular="+celular+"&provincia="+provincia+"&ciudad="+ciudad+
+      "&direccion="+direccion+"&numero="+numero+"&piso="+piso+"&depto="+depto+"&upload="+upload+"&razon="+razon+"&cuit="+cuit+"&condicioniva="+condicioniva+
+      "&rubro="+rubro+"&telfijo_com="+telfijo_com+"&celular_com="+celular_com+"&direccion_com="+direccion_com+"&numero_com="+numero_com+"&piso_com="+piso_com+
+      "&depto_com="+depto_com+"&notas="+notas+"&asignado="+asignado+"&financia="+financia+"&limite="+limite_financia+"&listap="+listap+"&dias_financia="+dias_financia;
     tomociudad = ciudad;
     // console.log('datos string2: '+string2);
             $.ajax({
@@ -391,36 +396,31 @@ for(i=0; i < cantidad-1; i++) {
     function editar_cliente(id){
       console.log('Entra a la funcion');
         var tipodni = $('.tipodni_editf option:selected').val(); //ok
-    //    var sexoh = $('.sexoh').val();
-    //    var sexom = $('.sexom').val();
-        if( $('.sexoh').prop('checked') ) {
-            var sexo ='H';
-          }
-        if( $('.sexom').prop('checked') ) {
-            var sexo ='M';
-          }
-    //    var ecivil = $('.ecivil option:selected').val();
+    
         var cumple = $('.cumple_editf').val();
         var email = $('.email_editf').val(); //ok
         var telfijo = $('.telfijo_editf').val(); //ok
         var celular = $('.celular_editf').val(); //ok
         var provincia = $('.provincia_editf option:selected').val(); //ok
         var ciudad = $('.ciudad_editf option:selected').val(); //ok
-    //    var upload = $('.upload').val(); // -->
         var razon = $('.razon_editf').val(); //ok
         var cuit = $('.cuit_editf').val(); //ok
         var rubro = $('.rubro_editf option:selected').val(); //ok
         var condicioniva = $('.condicioniva_editf option:selected').val(); //ok
         var asignado = $('.asignado_editf option:selected').val();
         var direccion_com = $('.direccion_com_editf').val(); //ok
-        console.log('termina');
-     var numero_com = $('.numero_com_editf').val(); //ok
+        var numero_com = $('.numero_com_editf').val(); //ok
         var piso_com = $('.piso_com_editf').val(); //ok
         var depto_com = $('.depto_com_editf').val(); //ok
         var ecivil = $('.ecivil_editf option:selected').val(); //ok
         var financia = $('#financia_editf').val(); //ok
         var limite_financia = $('#limitefinancia_editf').val(); //ok
-        var string2 = "accion=editar_clientes&id="+id+"&tipodni="+tipodni+"&dni="+cuit+"&sexo="+sexo+"&ecivil="+ecivil+"&cumple="+cumple+"&email="+email+"&telfijo="+telfijo+"&celular="+celular+"&provincia="+provincia+"&ciudad="+ciudad+"&asignado="+asignado+"&razon="+razon+"&cuit="+cuit+"&condicioniva="+condicioniva+"&rubro="+rubro+"&direccion_com="+direccion_com+"&numero_com="+numero_com+"&piso_com="+piso_com+"&depto_com="+depto_com+"&financia="+financia+"&limite="+limite_financia;
+        var listap = $('#listap_editf').val();
+        var dias_financia =$('#financia_dias_editf').val()
+        var string2 = "accion=editar_clientes&id="+id+"&tipodni="+tipodni+"&dni="+cuit+"&cumple="+cumple+"&email="+email+"&telfijo="+telfijo+
+          "&celular="+celular+"&provincia="+provincia+"&ciudad="+ciudad+"&asignado="+asignado+"&razon="+razon+"&cuit="+cuit+"&condicioniva="+condicioniva+
+          "&rubro="+rubro+"&direccion_com="+direccion_com+"&numero_com="+numero_com+"&piso_com="+piso_com+"&depto_com="+depto_com+"&financia="+financia+
+          "&limite="+limite_financia+"&listap="+listap+"&dias_financia="+dias_financia;
       //  tomociudad = ciudad;
          console.log('datos string2: '+string2);
 
@@ -619,37 +619,87 @@ if(tipo=='1'){var paso = 'pedidos';}else {var paso = 'pagos';}
       }
       */
 
-      function liquidacion(id){
-        var acumulando_items =0;
-        $(".cantidades").each(function(){
-          acumulando_items = parseFloat(acumulando_items) + parseFloat($(this).val());
-         });
-      //  var prov = $('.provincia').val();
-      //  console.log('provincia= '+prov);
-      	var idcarga = id;
-        var vendedor = $('#personal_'+id).val();
-        var camion = vendedor;
-        var devoluciones = $('#cantidadprod_'+id).val();
-        var montototal = $('#tot_a_cobrar_'+id).val();
-        var entrega = $('#total_rendido_'+id).val();
-        var fecha = $('#fecha_'+id).val();
-        var observaciones = $('#observacion_liq_'+id).val();
-        var items = $('#items_'+id).val();
+function liquidacion(id){
+  var acumulando_items =0;
+  $(".cantidades").each(function(){
+    acumulando_items = parseFloat(acumulando_items) + parseFloat($(this).val());
+    });
+//  var prov = $('.provincia').val();
+//  console.log('provincia= '+prov);
+  var idcarga = id;
+  var vendedor = $('#personal_'+id).val();
+  var camion = vendedor;
+  var devoluciones = $('#cantidadprod_'+id).val();
+  var montototal = $('#tot_a_cobrar_'+id).val();
+  var entrega = $('#total_rendido_'+id).val();
+  var fecha = $('#fecha_'+id).val();
+  var observaciones = $('#observacion_liq_'+id).val();
+  var items = $('#items_'+id).val();
 
-        $.ajax({
-            type: "POST",
-            url: "procesos/camion.php?",
-            data: "a=liquida&idcarga="+idcarga+"&vendedor="+vendedor+"&camion="+camion+"&devoluciones="+devoluciones+"&montototal="+montototal+"&entrega="+entrega+"&observaciones="+observaciones+"&items="+items+"&fecha="+fecha,
-            success: function(data) {
-              if(data=='true'){
-                window.location.href = "index.php?pagina=liquidaciones";
+  $.ajax({
+      type: "POST",
+      url: "procesos/camion.php?",
+      data: "a=liquida&idcarga="+idcarga+"&vendedor="+vendedor+"&camion="+camion+"&devoluciones="+devoluciones+"&montototal="+montototal+"&entrega="+entrega+"&observaciones="+observaciones+"&items="+items+"&fecha="+fecha,
+      success: function(data) {
+        if(data=='true'){
+          window.location.href = "index.php?pagina=liquidaciones";
 
-              }
-              console.log('Resultado= '+data)
-            }
-        });
-
+        }
+        console.log('Resultado= '+data)
       }
+  });
+
+}
+
+function liquidacion_stock(id){
+  var acumulando_items =0;
+  $(".cantidades").each(function(){
+    acumulando_items = parseFloat(acumulando_items) + parseFloat($(this).val());
+    });
+  var idcarga = id;
+  var vendedor = $('#personal_'+id).val();
+  var camion = vendedor;
+  var devoluciones = $('#cantidadprod_'+id).val();
+  var fecha = $('#fecha_'+id).val();
+  var observaciones = $('#observacion_liq_'+id).val();
+  var items = $('#items_'+id).val();
+
+  $.ajax({
+      type: "POST",
+      url: "procesos/camion.php?",
+      data: "a=liquida_stock&idcarga="+idcarga+"&vendedor="+vendedor+"&camion="+camion+"&devoluciones="+devoluciones+"&observaciones="+observaciones+"&items="+items+"&fecha="+fecha,
+      success: function(data) {
+        if(data=='true'){
+          window.location.href = "index.php?pagina=liquidaciones";
+
+        }
+        console.log('Resultado= '+data)
+      }
+  });
+}
+function liquidacion_plata(id){
+  var idcarga = id;
+  var vendedor = $('#personal_'+id).val();
+  var devoluciones = $('#cantidadprod_'+id).val();
+  var montototal = $('#tot_a_cobrar_'+id).val();
+  var entrega = $('#total_rendido_'+id).val();
+  var fecha = $('#fecha_'+id).val();
+  var observaciones = $('#observacion_liq_'+id).val();
+
+  $.ajax({
+      type: "POST",
+      url: "procesos/camion.php?",
+      data: "a=liquida_plata&idcarga="+idcarga+"&vendedor="+vendedor+"&devoluciones="+devoluciones+"&montototal="+montototal+"&entrega="+entrega+"&observaciones="+observaciones+"&fecha="+fecha,
+      success: function(data) {
+        if(data=='true'){
+          window.location.href = "index.php?pagina=liquidaciones";
+
+        }
+        console.log('Resultado= '+data)
+      }
+  });
+}
+
 function activarCliente(id){
   $.ajax({
     type: "POST",
@@ -678,4 +728,104 @@ function desactivarCliente(id){
       console.log('Resultado= '+data)
     }
 });
+}
+
+function add_factura(){
+  var proveedor = $('#provee_factura').val();
+  var nro_factura = $('#nro_factura').val();
+  var tipo = $('#tipo_factura option:selected').val();
+  var monto = $('#monto_factura').val();
+  var obs = $('#detalle_factura').val();
+  var string2 = "accion=add_facturas&proveedor="+proveedor+"&nro_factura="+nro_factura+"&tipo="+tipo+"&monto="+monto+"&obs="+obs;
+          $.ajax({
+              type: "POST",
+              url: "procesos/crud.php?",
+              data: string2,
+              success: function(data){
+                console.log(data)
+                if(data!='FALSE'){
+                  window.location.href = "index.php?pagina=facturas&msg="+data;
+                }
+                else {alert('Error al insertar factura')}
+              }
+          });
+}
+function add_factura_pago(){
+  var factura = $('#nro_factura_pago').val();
+  var monto = $('#monto_factura_pago').val();
+  var obs = $('#detalle_factura_pago').val();
+  var string2 = "accion=add_facturas_pago&factura="+factura+"&monto="+monto+"&obs="+obs;
+  if(!factura || factura==''){
+    alert('Seleccionar numero factura')
+  }else if(!monto || monto==''){
+    alert('Ingresar monto')
+  }else{
+    $.ajax({
+      type: "POST",
+      url: "procesos/crud.php?",
+      data: string2,
+      success: function(data){
+        console.log(data)
+        if(data!='FALSE'){
+          window.location.href = "index.php?pagina=facturas&msg="+data;
+        }
+        else {alert('Error al insertar pago factura')}
+      }
+    });
+  }
+  
+}
+
+function cambiafacturasprove(){
+  var proveedor = $('#provee_pago').val();
+  var string2 = "accion=get_facturas&proveedor="+proveedor;
+  $('#nro_factura_pago').html('')
+  $.ajax({
+      type: "POST",
+      url: "procesos/crud.php?",
+      data: string2,
+      success: function(data){
+        if(data!='FALSE'){
+          data = JSON.parse(data)
+          console.log(data)
+          $('#nro_factura_pago').html('')
+          var opciones = "";
+          data.forEach(e=>{
+            opciones+=`<option value="${e.id}">${e.nro_factura} (SALDO: $${e.saldo})</option>`
+          })
+          $('#nro_factura_pago').html(opciones)
+        }
+        else {alert('Error al cargar facturas')}
+      }
+  });
+}function envia_productos_wsp(lista_precio,telefono){
+  var dataString = 'productos=GET';
+  $.ajax({
+    type: "POST",
+    url: "procesos/crud.php?",
+    data: dataString,
+    dataType: 'json',
+    crossDomain: true,
+    cache: false,
+    success: function(data) {
+      if (data.estado == 'true') {
+        data= data.productos
+        let mensaje="LISTADO PRODUCTOS : \n";
+        data.forEach(producto => {
+          if(lista_precio==1 && producto.precio_producto && producto.precio_producto!='null' && producto.precio_producto!=null){
+            mensaje+="- "+producto.detalle_producto+"   $"+producto.precio_producto+"\n";
+          } else if(lista_precio==2 && producto.precio_producto2 && producto.precio_producto2!='null' && producto.precio_producto2!=null){
+            mensaje+="- "+producto.detalle_producto+"   $"+producto.precio_producto2+"\n";
+          } else if(lista_precio==3 && producto.precio_producto3 && producto.precio_producto3!='null' && producto.precio_producto3!=null){
+            mensaje+="- "+producto.detalle_producto+"   $"+producto.precio_producto3+"\n";
+          }
+        })
+        mensaje = encodeURIComponent(mensaje.replace(/&/g, '%26').replace(/#/g, '%23'));
+        let url_wsp='https://wa.me/'+ telefono +'?text='+mensaje;
+        var win = window.open(url_wsp, '_blank');
+        win.focus()
+        
+      }
+    }
+  })
 }

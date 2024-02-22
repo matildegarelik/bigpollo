@@ -61,16 +61,7 @@ $hasta = date("Y-m-d", strtotime('next Sunday '));
               <?php if ($_SESSION['tipo'] != 'User') { ?> <a href="index.php?pagina=rubro_add" class="dropdown-item">Nuevo Rubro</a> <?php } ?>
             </div>
           </div>
-          <div class="btn-group" style="margin-left: 10px;">
-            <button onclick="location.href='index.php?pagina=personal'" type="button" class="btn btn-primary" style="font-size: 20px;"><i class="fa fa-user-o"></i></button>
-            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <i class="fa fa-angle-down"></i>
-            </button>
-            <div class="dropdown-menu">
-              <a href="index.php?pagina=personal" class="dropdown-item">Listado del Personal</a>
-              <a href="index.php?pagina=personal_add" class="dropdown-item">Nuevo Personal</a>
-            </div>
-          </div>
+          
 
           <div class="btn-group" style="margin-left: 10px;">
             <button type="button" onclick="location.href='index.php?pagina=pedidos'" class="btn btn-success" style="font-size: 20px;"><i class="ti-shopping-cart-full"></i></button>
@@ -94,7 +85,7 @@ $hasta = date("Y-m-d", strtotime('next Sunday '));
             </div>
           </div>
           <div class="btn-group" style="margin-left: 10px;">
-            <button type="button" onclick="location.href='#'" class="btn btn-primary" style="font-size: 20px;"><i class="ti-package"></i></button>
+            <button type="button" onclick="location.href='index.php?pagina=productos'" class="btn btn-primary" style="font-size: 20px;"><i class="ti-package"></i></button>
             <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <i class="fa fa-angle-down"></i>
             </button>
@@ -105,16 +96,7 @@ $hasta = date("Y-m-d", strtotime('next Sunday '));
               <?php if ($_SESSION['tipo'] != 'User') { ?> <li><a href="index.php?pagina=categoria_add" class="dropdown-item">Nueva Categoria</a></li> <?php } ?>
             </div>
           </div>
-          <div class="btn-group" style="margin-left: 10px;">
-            <button type="button" onclick="location.href='index.php?pagina=proveedores'" class="btn btn-info" style="font-size: 20px;"><i class="fa fa-suitcase"></i></button>
-            <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <i class="fa fa-angle-down"></i>
-            </button>
-            <div class="dropdown-menu">
-              <li><a href="index.php?pagina=proveedores" class="dropdown-item">Listado de Proveedores</a></li>
-              <li><a href="index.php?pagina=proveedores_add" class="dropdown-item">Nuevo Proveedor</a></li>         
-            </div>
-          </div>
+          
         <?php } ?>
         <div class="btn-group" style="margin-left: 10px;">
           <button type="button" onclick="location.href='index.php?pagina=estadocamion'" class="btn btn-success" style="font-size: 20px;"><i class="ti-truck"></i></button>
@@ -136,6 +118,27 @@ $hasta = date("Y-m-d", strtotime('next Sunday '));
 
             <a href="#" data-toggle="modal" data-target="#modal_informe"><button type="button" class="btn " style="font-size: 20px;background-color:#8d3fbb;color:#FFF;"><i class="ti-agenda"></i></button></a>
            
+          </div>
+          <div class="btn-group" style="margin-left: 10px;">
+            <button onclick="location.href='index.php?pagina=personal'" type="button" class="btn btn-primary" style="font-size: 20px;"><i class="fa fa-user-o"></i></button>
+            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fa fa-angle-down"></i>
+            </button>
+            <div class="dropdown-menu">
+              <a href="index.php?pagina=personal" class="dropdown-item">Listado del Personal</a>
+              <a href="index.php?pagina=personal_add" class="dropdown-item">Nuevo Personal</a>
+            </div>
+          </div>
+          <div class="btn-group" style="margin-left: 10px;">
+            <button type="button" onclick="location.href='index.php?pagina=proveedores'" class="btn btn-info" style="font-size: 20px;"><i class="fa fa-suitcase"></i></button>
+            <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fa fa-angle-down"></i>
+            </button>
+            <div class="dropdown-menu">
+              <li><a href="index.php?pagina=proveedores" class="dropdown-item">Listado de Proveedores</a></li>
+              <li><a href="index.php?pagina=proveedores_add" class="dropdown-item">Nuevo Proveedor</a></li> 
+              <li><a href="index.php?pagina=facturas" class="dropdown-item">Listado de Facturas</a></li>     
+            </div>
           </div>
         <?php } ?>
       </ul>

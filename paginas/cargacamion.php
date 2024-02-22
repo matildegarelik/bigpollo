@@ -27,7 +27,7 @@
             <input type="hidden" name="product" id="product">
             <div class="row">
               <div class="col-md-2 m-b-20">
-                <input type="date" id="fechacarga" class="form-control fecha" value="<?php echo date("Y-m-d"); ?>" required="">
+                <input type="datetime-local" id="fechacarga" class="form-control fecha" value="<?php echo date("Y-m-d\TH:i"); ?>" required="">
               </div>
 
               <div class="col-md-10 m-b-20">

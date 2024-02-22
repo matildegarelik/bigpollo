@@ -93,7 +93,20 @@ p.nombre_producto{
 .media {background:#fff; position:relative; margin-bottom:15px;    border-radius: 4px;}
 .media img{width:150px;margin:0; float: left;/*height:136px;*/}
 .media-body{border-left:0;padding-top: 10%;height: 100%;text-transform: uppercase;}
-.media .price{text-align: center;float:left; /*width:100%;*/ font-size:40px;font-weight:600; color:#4765AB;padding-top: 20px;padding-left: 10px;padding-bottom: 5px;background-color: thistle;}
+.media .price{
+  text-align: center;
+  position: absolute;
+  top:0;
+  bottom:0;
+  float:left; /*width:100%;*/ 
+  font-size:40px;
+  font-weight:600; 
+  color:#4765AB;
+  padding-left: 10px;
+  background-color: thistle;
+  display:flex;
+  align-items: center;
+}
 .media .price small{display:block; font-size:17px; color:#232323;padding-top: 15px;padding-right: 10px;}
 .media .address{float:left; width:100%;color:#000;text-align: center;height: 100%;font-weight: 800;}
 .media .fav-box{position:absolute; right:10px; font-size:20px; top:4px; color:#E74C3C;}
@@ -1329,8 +1342,10 @@ span.cliente_select>span{
   text-align: center;
   font-weight: bold;
   text-decoration: none;
-  font-size: 30px;
+  font-size: 25px;
   margin-top: 20px;
+  line-height: 30px;
+  margin-left: 40px;
 }
 
 #listado_clientes a:hover{
@@ -1339,4 +1354,8 @@ span.cliente_select>span{
 
 #listado_pedidos{
   color:#fff;
+}
+.unidades{
+  text-transform: lowercase;
+  font-size: smaller;
 }

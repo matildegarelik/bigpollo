@@ -88,35 +88,46 @@ if ($_SESSION['usuario'] != "") {
 
 	//////////////////////////////////////////////////////
 
-	if ($_POST['a'] == 'liquida') {
-
+	if ($_POST['a'] == 'liquida_stock') {
 
 		$idcarga = $_POST['idcarga'];
 		$vendedor = $_POST['vendedor'];
 		$camion = $_POST['camion'];
-		$devoluciones = $_POST['devoluciones'];
-		$montototal = $_POST['montototal'];
-		$entrega = $_POST['entrega'];
 		$observaciones = $_POST['observaciones'];
-		$json = json_decode($_POST['items'], true);
-		$cantitems = count($json);
 		$json_completo = addslashes(safe_json_encode($_POST));
 
 		$periodo = $_POST['fecha'];
 		$sql_item = "UPDATE stock_depositos SET	estado_stockd='2' WHERE idpersona_stockd='$vendedor' and DATE(fecha_stockd) like '$periodo' and estado_stockd='1'";
 		$add_it = $link->query($sql_item);
-		$sql_add = "INSERT INTO liquidaciones SET devoluciones_liquidacion='" . $devoluciones . "',	montototal_liquidacion='" . $montototal . "',	entrega_liquidacion='" . $entrega . "',	observaciones_liquidacion='" . $observaciones . "',	vendedor_liquidacion='" . $vendedor . "',	cuando_liquidacion='$cuando',	fecha_liquidacion='$periodo',quien_liquidacion='$quien',	json_liquidacion='$json_completo',	estado_liquidacion='1' ";
 		if ($add_it > 0) {
-			$add = $link->query($sql_add);
-			if ($add) {
+			$sql_item = "UPDATE carga_camion SET autoriza_cargac='0001-02-15' WHERE id_cargac='$idcarga'";
+			$add_it = $link->query($sql_item);
+		
 				echo 'true';
-			} else {
-				echo 'false liquida' . $sql_add;
-			}
 		} else {
 
 			echo 'false update stock' . $sql_item;
 		}
+	}
+	if ($_POST['a'] == 'liquida_plata') {
+		$idcarga = $_POST['idcarga'];
+		$vendedor = $_POST['vendedor'];
+		$devoluciones = $_POST['devoluciones'];
+		$montototal = $_POST['montototal'];
+		$entrega = $_POST['entrega'];
+		$observaciones = $_POST['observaciones'];
+		$json_completo = addslashes(safe_json_encode($_POST));
+		$periodo = $_POST['fecha'];
+		$sql_add = "INSERT INTO liquidaciones SET devoluciones_liquidacion='" . $devoluciones . "',	montototal_liquidacion='" . $montototal . "',	entrega_liquidacion='" . $entrega . "',	observaciones_liquidacion='" . $observaciones . "',	vendedor_liquidacion='" . $vendedor . "',	cuando_liquidacion='$cuando',	fecha_liquidacion='$periodo',quien_liquidacion='$quien',	json_liquidacion='$json_completo',	estado_liquidacion='1' ";
+		$add = $link->query($sql_add);
+		if ($add) {
+			$sql_item = "UPDATE carga_camion SET autoriza_cargac='$periodo' WHERE id_cargac='$idcarga'";
+			$add_it = $link->query($sql_item);
+			echo 'true';
+		} else {
+			echo 'false liquida' . $sql_add;
+		}
+		
 	}
 
 	//////////////////////////////////////////////////////

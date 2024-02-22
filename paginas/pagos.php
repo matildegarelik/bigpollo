@@ -1,4 +1,4 @@
-<?php if($_GET['add']=='1'){ include('clientes_add.php');}
+<?php if(isset($_GET['add']) && $_GET['add']=='1'){ include('clientes_add.php');}
   else {?><div class="container-fluid">
 
                 <div class="row page-titles">
@@ -21,14 +21,13 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-body">
+                            <div class="card-body"><h4 class="card-title">Listado</h4> 
                               <div class="row">
-                                <div class="col-md-2"><h4 class="card-title">Listado</h4> </div>
                                 <div class="col-md-2"><small class="form-control-feedback"> Desde </small>
-                                    <input class="form-control filtro" type="date" id="d" name="d" value="<?php if($_GET['d']){echo $_GET['d'];}else{echo date('Y-m-01');}?>">
+                                    <input class="form-control filtro" type="date" id="d" name="d" value="<?php if(isset($_GET['d'])){echo $_GET['d'];}else{echo date('Y-m-01');}?>">
                                 </div>
                                 <div class="col-md-2"><small class="form-control-feedback"> Hasta </small>
-                                    <input class="form-control filtro" type="date" id="h" name="h" value="<?php if($_GET['h']){echo $_GET['h'];}else{echo date('Y-m-d');}?>">
+                                    <input class="form-control filtro" type="date" id="h" name="h" value="<?php if(isset($_GET['h'])){echo $_GET['h'];}else{echo date('Y-m-d');}?>">
                                 </div>
                                 <div class="col-md-2"><small class="form-control-feedback"> Vendedor </small><br>
                                   <select class="form-control" id="vendedorsel">
@@ -38,18 +37,54 @@
                                     while ($row= mysqli_fetch_array($busca_vende)){
 
                                       echo '<option value="'.$row['id'].'"';
-                                      if($_GET['v']==$row['id']){echo ' selected ';}
+                                      if(isset($_GET['v']) && $_GET['v']==$row['id']){echo ' selected ';}
                                       echo '>'.$row['nombre'].'</option>';
                                     }
                                      ?>
                                   </select>
 
                                 </div>
-                                <div class="col-md-2" style="align-self: center;">
-                                  <a href="#" onclick="filtrar_vende()" class="btn btn-info btn-lg" role="button" >Filtrar</a>
+                                <div class="col-md-2"><small class="form-control-feedback">Forma pago </small><br>
+                                  <select class="form-control" id="formasel">
+                                    <option value='' selected>Todas</option>
+                                    <?php
+                                    $busca_f = $link->query("SELECT * FROM `formas_pagos` WHERE `estado_formapago` LIKE '1'");
+                                    while ($row= mysqli_fetch_array($busca_f)){
+
+                                      echo '<option value="'.$row['id_formapago'].'"';
+                                      if(isset($_GET['f']) && $_GET['f']==$row['id_formapago']){echo ' selected ';}
+                                      echo '>'.$row['detalle_formapago'].'</option>';
+                                    }
+                                     ?>
+                                  </select>
+
                                 </div>
+                                <div class="col-md-2" style="margin-top:17px">
+                                  <a href="#" onclick="filtrar_vende()" class="btn btn-info btn-lg" role="button" >Filtrar</a>
+                                  <?php if(isset($_GET['d']) || isset($_GET['h'])){?><a href="index.php?pagina=pagos">Quitar Filtros</a><?php }?>
+                                </div>
+                                  
                                 <div class="col-md-2" style="align-self: center;">
-                                  <?php if($_GET['d'] || $_GET['h']){?><a href="index.php?pagina=pedidos">Quitar Filtros</a><?php }?>
+                                  <div id="totales_formas">
+                                    <?php 
+                                    if(isset($_GET['d'])){$desde = $_GET['d'];} else {$desde = date('Y-m-01');}
+                                    if(isset($_GET['h'])){$hasta = $_GET['h'];} else {$hasta = date('Y-m-d');}
+                                    if(isset($_GET['v']) && $_GET['v']!=''){$vendedor = ' and transaccion.quien = '.$_GET['v'];} else {$vendedor = '';}
+                                    if(isset($_GET['f']) && $_GET['f']!=''){$forma = ' and transaccion.forma_pago = '.$_GET['f'];} else {$forma = '';}
+                                    $sql = "SELECT fp.id_formapago, fp.detalle_formapago, SUM(t.monto2) as subtotal FROM formas_pagos fp 
+                                        left join (SELECT * from transaccion where transaccion.tipo='pago' and transaccion.estado='1' and date(transaccion.fecha) >= '$desde' 
+                                          and date(transaccion.fecha) <= '$hasta'  $vendedor $forma) t on t.forma_pago=fp.id_formapago 
+                                        WHERE fp.estado_formapago = '1' 
+                                        GROUP BY id_formapago,detalle_formapago;";
+                                    $busca_formas = $link->query($sql);
+                                    //echo $sql;
+
+                                    while ($row_forma= mysqli_fetch_assoc($busca_formas)){ 
+                                      if($row_forma['subtotal']) {?>
+                                      <p style="font-size: 12px;line-height: 17px;margin:0"><?= $row_forma['detalle_formapago'] ?>: <span class="pull-right">$<?php if($row_forma['subtotal']) echo $row_forma['subtotal'] ; else echo 0?></span></p>
+                                    <?php } } ?>
+                                  </div>
+                                  <hr>
                                   <div id="total_periodo">Total $</div>
                                 </div>
 
@@ -72,13 +107,11 @@
                                         </thead>
                                         <tbody>
                                             <?php
-                                            if($_GET['d']){$desde = $_GET['d'];} else {$desde = date('Y-m-01');}
-                                            if($_GET['h']){$hasta = $_GET['h'];} else {$hasta = date('Y-m-d');}
-                                            if($_GET['v']){$vendedor = ' and quien = '.$_GET['v'];} else {$vendedor = '';}
-                                            $acumula='0';
+                                            
+                                            $acumula=0;
                                             $con_pedidos = $link->query("SELECT * FROM `transaccion`
-                                            inner join clientes on transaccion.cliente = clientes.id_clientes
-                                            WHERE transaccion.estado='1' and transaccion.tipo ='pago' and date(transaccion.fecha) >= '$desde' and date(transaccion.fecha) <= '$hasta'  $vendedor order by transaccion.fecha DESC, apellido_clientes ASC ");
+                                            left join clientes on transaccion.cliente = clientes.id_clientes
+                                            WHERE transaccion.estado='1' and transaccion.tipo ='pago' and date(transaccion.fecha) >= '$desde' and date(transaccion.fecha) <= '$hasta'  $vendedor $forma order by transaccion.fecha DESC, apellido_clientes ASC ");
                                             while ($row= mysqli_fetch_array($con_pedidos)){
                                               $acumula= $acumula+$row['monto2'];
                                             ?>
@@ -154,8 +187,9 @@
                 var datodesde = $('#d').val(); // get selected value
                 var datohasta = $('#h').val(); // get selected value
                 var datovendedor = $('#vendedorsel option:selected').val(); // get selected value
+                var datoforma = $('#formasel option:selected').val(); // get selected valu
                 if (datodesde) { // require a URL
-                    window.location = 'index.php?pagina=pagos&d='+datodesde+'&h='+datohasta+'&v='+datovendedor; // redirect
+                    window.location = 'index.php?pagina=pagos&d='+datodesde+'&h='+datohasta+'&v='+datovendedor+'&f='+datoforma; // redirect
                 }
                 return false;
             };

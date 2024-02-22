@@ -116,6 +116,7 @@ if ($_SESSION['usuario'] != '') {
     if($financia=='' || $financia=='null'){$financia='0';}
     $limite= $_POST['limite'];
     $listap= $_POST['listap'];
+    $dias_financia= $_POST['dias_financia'];
 
 
     // inicio geoencode
@@ -167,7 +168,8 @@ if ($_SESSION['usuario'] != '') {
     estado_clientes='1',
     quien_clientes='$quien',
     cuando_clientes='$cuando',
-    lista_precio='$listap'";
+    lista_precio='$listap',
+    dias_financiacion='$dias_financia'";
     $inserta = $link->query($inserto_cliente);
     $id_clie_ulti = mysqli_insert_id($link);
   //  $inserta = $link->query("insert INTO clientes_comercios set situacion_comclientes='activo', cliente_comclientes='$id_clie_ulti', estado_comclientes='1',	quien_comclientes='$quien',	cuando_comclientes='$cuando'");
@@ -291,45 +293,42 @@ if ($_SESSION['usuario'] != '') {
   if (isset($_POST['accion']) && $_POST['accion'] == 'editar_clientes') {
     //echo 'entro';
     $id = $_POST['id'];
-    $apellido = $_POST['apellido'];
-    $nombre = $_POST['nombre'];
+    $apellido ='';
+    $nombre = '';
     $tipodni = $_POST['tipodni'];
     $dni = $_POST['dni'];
-    $sexo = $_POST['sexo'];
-    if ($sexo == '' || $sexo == 'undefined') {
-      $sexo = 'H';
-    }
-
-    $ecivil = $_POST['ecivil'];
+    
     $cumple = $_POST['cumple'];
     if ($cumple == '') {
       $cumple = '0000-00-00';
     }
     $email = $_POST['email'];
-    $email2 = $_POST['email2'];
     $telfijo = $_POST['telfijo'];
     $celular = $_POST['celular'];
     $provincia = $_POST['provincia'];
     $ciudad = $_POST['ciudad'];
-    $upload = $_POST['upload'];
-    $notas = $_POST['notas'];
+    $notas = '';
+    if(isset($_POST['notas'])) $notas=$_POST['notas'];
     $razon = addslashes(htmlentities($_POST['razon']));
     $cuitcuil = $_POST['dni'];
     $condicioniva = $_POST['condicioniva'];
     $rubro = $_POST['rubro'];
-    $telfijo_com = $_POST['telfijo_com'];
-    $celular_com = $_POST['celular_com'];
+    $telfijo_com = $_POST['telfijo'];
+    $celular_com = $_POST['celular'];
     $direccion_com = $_POST['direccion_com'];
     $numero_com = $_POST['numero_com'];
     $piso_com = $_POST['piso_com'];
     $depto_com = $_POST['depto_com'];
-    $upload = $_POST['upload'];
     $asignado = $_POST['asignado'];
     $financia = $_POST['financia'];
     $limite = $_POST['limite'];
     if ($asignado == '') {
       $asignado = '0';
     }
+    $upload='';
+    if(isset($_POST['upload'])) $upload= $_POST['upload'];
+    $dias_financia=$_POST['dias_financia'];
+    $listap=$_POST['listap'];
     // inicio geoencode
     $consulto_datos = $link->query("SELECT * from ciudad INNER JOIN provincia on provincia.id_provincia = ciudad.provincia_id where ciudad.id_ciudad ='$ciudad'");
     $row = mysqli_fetch_array($consulto_datos);
@@ -354,8 +353,9 @@ if ($_SESSION['usuario'] != '') {
     }
     // fin geoencode
     $sql_update_client = "UPDATE clientes SET tipodni_clientes='$tipodni',	dni_clientes='$dni',	fechacumple_clientes='$cumple',	email_clientes='$email',	celular_clientes='$celular',	telefono_clientes='$telfijo',	provincia_clientes='$provincia',	ciudad_clientes='$ciudad',	direccion_clientes='$direccion_com',	dirnum_clientes='$numero_com',
-          piso_clientes='$piso_com', depto_clientes='$depto_com',	estadocivil_clientes='$ecivil',	foto_clientes='$upload',	sexo_clientes='$sexo',	notas_clientes='$notas',	estado_clientes='1',	lat_clientes='$latitud',	lng_clientes='$longitud',	 razon_com_clientes='$razon', cuitcuil_com_clientes='$cuitcuil', condicioniva_com_clientes='$condicioniva', rubro_com_clientes='$rubro', direccion_com_clientes='$direccion_com',
-           quien_clientes='$quien',	cuando_clientes='$cuando', asignado_clientes='$asignado', financiacion_com_clientes='$financia', topefinancia_com_clientes='$limite'  where id_clientes = '$id' ";
+          piso_clientes='$piso_com', depto_clientes='$depto_com',	foto_clientes='$upload',	notas_clientes='$notas',	estado_clientes='1',	lat_clientes='$latitud',	lng_clientes='$longitud',	 razon_com_clientes='$razon', cuitcuil_com_clientes='$cuitcuil', condicioniva_com_clientes='$condicioniva', rubro_com_clientes='$rubro', direccion_com_clientes='$direccion_com',
+           quien_clientes='$quien',	cuando_clientes='$cuando', asignado_clientes='$asignado', financiacion_com_clientes='$financia', topefinancia_com_clientes='$limite',
+           lista_precio='$listap', dias_financiacion='$dias_financia'  where id_clientes = '$id' ";
 
     $inserta = $link->query($sql_update_client);
 
@@ -636,6 +636,91 @@ if ($_SESSION['usuario'] != '') {
       echo 'TRUE';
     } else {
       echo 'FALSE';
+    }
+  }
+
+  //************ Proceso Carga Facturas de Proveedor **************//
+  if (isset($_POST['accion']) && $_POST['accion'] == 'add_facturas') {
+    $proveedor = $_POST['proveedor'];
+    $nro_factura = $_POST['nro_factura'];
+    $tipo = $_POST['tipo'];
+    $monto = $_POST['monto'];
+    $obs = $_POST['obs'];
+    
+    
+
+    $inserta = $link->query("INSERT INTO facturas SET nro_factura='$nro_factura', id_proveedor='$proveedor',	tipo='$tipo', monto='$monto', observaciones='$obs'");
+    $id = mysqli_insert_id($link);
+
+    if ($inserta) {
+      echo $id . '@' . $nro_factura . ', ' . $tipo . '@' . $monto ;
+    } else {
+      echo 'FALSE';
+    }
+  }
+  if (isset($_POST['accion']) && $_POST['accion'] == 'get_facturas') {
+    $proveedor = $_POST['proveedor'];
+    
+    $consulta = $link->query("SELECT * from facturas where id_proveedor='$proveedor'");
+    $rows = array(); // Inicializa un array para almacenar todas las filas
+
+    while ($fila = mysqli_fetch_assoc($consulta)) {
+      $saldo = $fila['monto'];
+      $id_factura= $fila['id'];
+      $consulta2 = $link->query("SELECT * from facturas_pagos where id_factura='$id_factura'");
+      $rows2 = array(); // Inicializa un array para almacenar todas las filas
+      while ($fila2 = mysqli_fetch_assoc($consulta2)) {
+        $saldo =$saldo-$fila2['monto'];
+      }
+      if($saldo>0){
+        $fila['saldo'] = $saldo;
+        $rows[] = $fila; // Agrega cada fila al array
+      }
+      
+    }
+
+    if ($rows) {
+      echo json_encode($rows) ;
+    } else {
+      echo 'FALSE';
+    }
+  }
+  if (isset($_POST['accion']) && $_POST['accion'] == 'add_facturas_pago') {
+    $factura = $_POST['factura'];
+    $monto = $_POST['monto'];
+    $obs = $_POST['obs'];
+    
+    $inserta = $link->query("INSERT INTO facturas_pagos SET id_factura='$factura', monto='$monto', observaciones='$obs'");
+    $id = mysqli_insert_id($link);
+
+    if ($inserta) {
+      echo $id . '@' . $factura . '@' . $monto ;
+    } else {
+      echo 'FALSE';
+    }
+  }
+
+  //************ Proceso vER PRODUCTOS **************//
+  if (isset($_POST['productos']) && $_POST['productos']=="GET") {
+  
+
+    $productos = $link->query("SELECT * FROM productos  WHERE estado_producto='1'") or die(mysqli_error());
+    $data_prods=array();
+    if (mysqli_num_rows($productos) > 0) {
+      while ($row = mysqli_fetch_ASSOC($productos)) {
+        $data_prods[]=$row;
+      }
+      $data['productos'] = $data_prods;
+      $data['estado'] = 'true';
+    } else {
+      $data['estado'] = 'false';
+    }
+
+    $arreglo =  json_encode($data);
+    if ($arreglo) {
+      echo $arreglo;
+    } else {
+      echo "FALSE";
     }
   }
 }
